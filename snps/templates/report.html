@@ -1,0 +1,108 @@
+{% extends "navigation_base.html" %}
+{% block title %}Report{% endblock %}
+{% block nav %}
+  <li class="active"><a href="{{ url_for('report') }}">Report</a></li>
+  <li><a href="{{ url_for('about') }}">About</a></li>
+  <li><a href="{{ url_for('contact') }}">Contact</a></li>
+{% endblock %}
+{% block navcontent %}
+  <div class="alert alert-info">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+    <strong>Info!</strong> Click on table headers to sort. Use the checkboxes to view more information. A few notes: how to let a users create their own top_SNPS.txt file?
+  </div>
+  <div class="content-scroll center">
+    <div class="col-md-5">
+      <div class="scroll-table">
+        <div class="form-group pull-right">
+          <input type="text" class="search form-control" placeholder="Search">
+        </div>
+        <span class="counter pull-right"></span>
+        <table class="sortable table table-condensed table-hover results">
+          <thead>
+            <tr>
+              <th>View</th>
+              <th>rsid</th>
+              <th>Description</th>
+              <th>Risk</th>
+              <th>Magnitude<th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- link checkboxes with description boxes -->
+          	{% set count = 1 %}
+          	{% for match in matches %}
+          	{% set btn_num = 'button' ~ count %}
+            
+            <!-- determine icon -->
+            {% if match.repute == "Good" %}
+            {% set color = 'green' %}
+            {% set icon = 'glyphicon-arrow-up' %}
+            {% elif match.repute == "Bad" %}
+            {% set icon = 'glyphicon-arrow-down' %}
+            {% set color = 'red' %}
+            {% else %}
+            {% set color = 'grey' %}
+            {% set icon = 'glyphicon-minus' %}
+            {% endif %}
+            
+            <tr>
+              <td><input type="checkbox" value="{{ btn_num }}"></td>
+              <td>{{ match.snp.rs_id }}</td>
+              <td>{{ match.description }}</td>
+              <!-- eventually replace "??" with calculated risk -->
+              <td><span class="glyphicon {{ icon }}" style="color:{{ color }}">??</span></td>
+              <td>{{ match.magnitude }}</td>
+            </tr>
+            {% set count = count + 1 %}
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="col-md-7">
+      <div class="scroll-table">
+        <!-- link checkboxes with description boxes -->
+        {% set count = 1 %}
+        {% for match in matches %}
+        {% set btn_num = 'button' ~ count %}
+
+        <!-- determine color of box -->
+        {% if match.repute == "Good" %}
+          {% set repute_class = 'up' %}
+        {% elif match.repute == "Bad" %}
+          {% set repute_class = 'down' %}
+        {% else %}
+          {% set repute_class = 'flat' %}
+        {% endif %}
+
+        <div class="info {{ repute_class }} {{ btn_num }}" value="{{ btn_num }}" style="display:none">
+          <button class="close close-btn" aria-label="close">&times;</button>
+          <div class="container col-md-12 info-header">
+            <h3 class="info-header col-md-8" align="left">{{ match.description }}</h3>
+            <!-- eventually replace link, summary, risk, studies, etc. -->
+            <h3 class="info-header col-md-4" align="right"><a href="http://www.snpedia.com/index.php/Gs141" title="Read more about this SNP">{{ match.snp.rs_id }}</a></h3>
+          </div>
+          <p>{{ match.snp }} </p>
+          <p>{{ match }} </p>
+          <h4 align="center">Your Genotype: {{ match.genotype }} | Calculated Risk | Relevant Studies | Magnitude: {{ match.magnitude }} </h4>
+        </div>
+        {% set count = count + 1 %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- From Codecademy on JQuery -->
+    <script src="{{ url_for('static',filename='styles/1.11.1.jquery.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='styles/checkbox.js') }}"></script>
+    <script src="{{ url_for('static',filename='styles/searchable.js') }}"></script>
+
+  <!-- Bootstrap core JavaScript
+  ================================================== -->
+  <!-- Placed at the end of the document so the pages load faster -->
+  <script src="{{ url_for('static',filename='styles/1.11.3.jquery.min.js') }}"></script>
+  <script>window.jQuery || document.write('<script src="../bootstrap-3.3.6/assets/js/vendor/jquery.min.js"><\/script>')</script>
+  <script src="{{ url_for('static',filename='bootstrap-3.3.6/dist/js/bootstrap.min.js') }}"></script>
+  <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+  <script src="{{ url_for('static',filename='bootstrap-3.3.6/dist/js/ie10-viewport-bug-workaround.js') }}"></script>
+{% endblock %}

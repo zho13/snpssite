@@ -1,0 +1,43 @@
+body {
+	padding-top: 50px;
+}
+.starter-template {
+	padding: 40px 15px;
+	text-align: center;
+}
+.info {
+	margin-right: 20px;
+	margin-bottom: 15px;
+	border-style: solid;
+	border-radius: 15px;
+}
+.up {
+	border-color: #EC9CAA;
+}
+.down {
+	border-color: #BADAAA;
+}
+.flat {
+	border-color: #CDCBC9;
+}
+p {
+	padding-top: 10px;
+	padding-left: 15px;
+	padding-right: 15px;
+	padding-bottom: 10px;
+}
+h4 {
+	padding-left: 15px;
+	padding-right: 15px;
+}
+.scroll-table {
+	margin-right: 20px;
+	height: 650px !important;
+	overflow: auto;
+}
+
+.content-scroll {
+	margin-right: 20px;
+	height: 650px !important;
+	overflow: auto;
+}

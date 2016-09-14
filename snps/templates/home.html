@@ -1,0 +1,17 @@
+{% extends "jumbo_base.html" %}
+{% block title %}Home{% endblock %}
+{% block nav %}
+  <li><a href="{{ url_for('report') }}">Report</a></li>
+  <li><a href="{{ url_for('about') }}">About</a></li>
+  <li><a href="{{ url_for('contact') }}">Contact</a></li>
+{% endblock %}
+{% block jumbocontent %}
+  <div class="container welcome">
+    <h3 class="text-muted">
+      Welcome
+    </h3>
+    <h4 class="pull-left">Description</h4><br><br>
+    <p>Lorem ipsum dolor sit amet, tempor sagittis ut lacus consequat in, in faucibus felis, sed felis sagittis purus non diam amet, id accumsan in nibh platea ante etiam, est lobortis. Nisl inceptos pede nostra dui magnis integer. Cursus aliquam et tincidunt elementum lectus, suspendisse porta magna, in per ac lacus sit neque donec, eget vel id platea tincidunt. Nisl interdum nisl libero, purus imperdiet, lacus elementum. Feugiat aliquet in vestibulum tortor, euismod vestibulum velit mauris pulvinar elit vulputate, aliquam ultricies sed tristique integer unde ante, ad ut, ut pellentesque egestas etiam odio mollis at. Vitae enim sit enim vivamus, aliquam elementum, vel egestas accumsan ornare.</p>
+    <p>If you would like to try our service, navigate to the Report page.</p>
+  </div>
+{% endblock %}

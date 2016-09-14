@@ -1,0 +1,83 @@
+body {
+	padding-top: 50px;
+}
+.welcome {
+	padding: 40px 15px;
+	text-align: center;
+}
+.about {
+	margin-top: 50px;
+}
+.info {
+	margin-right: 20px;
+	margin-bottom: 15px;
+	border-style: solid;
+	border-radius: 15px;
+}
+.up {
+	border-color: #BADAAA;
+}
+.down {
+	border-color: #EC9CAA;
+}
+.flat {
+	border-color: #CDCBC9;
+}
+p {
+	padding-top: 10px;
+	padding-left: 15px;
+	padding-right: 15px;
+	padding-bottom: 10px;
+}
+.rsid {
+	text-align: right;
+}
+.scroll-table {
+	margin-right: 20px;
+	height: 650px !important;
+	overflow: auto;
+}
+
+.content-scroll {
+	margin-right: 20px;
+	height: 670px !important;
+	overflow: auto;
+}
+
+.image {
+	/* http://www.pageresource.com/wallpapers/68049/abstract-blue-and-green-with-dark-background-hd-wallpaper.html */
+	background-image: url("jumbo_image.jpg");
+	color: white;
+}
+
+.results tr[visible='false'],
+.no-result {
+  display:none;
+}
+
+.results tr[visible='true'] {
+  display:table-row;
+}
+
+.counter {
+  padding:8px; 
+  color:#ccc;
+}
+
+.alert {
+	margin-top: 20px;
+}
+.center {
+    margin: auto;
+    padding-top: 20px;
+    padding-left: 45px;
+}
+.close-btn {
+	margin-right: 10px;
+	margin-top: 5px;
+}
+
+.info-header {
+	margin-top: 0px;
+	margin-bottom: 10px;
+}

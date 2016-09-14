@@ -1,0 +1,35 @@
+{% extends "jumbo_base.html" %}
+{% block title %}Upload{% endblock %}
+{% block nav %}
+    <li class="active"><a href="{{ url_for('report') }}">Report</a></li>
+    <li><a href="{{ url_for('about') }}">About</a></li>
+    <li><a href="{{ url_for('contact') }}">Contact</a></li>
+{% endblock %}
+{% block jumbocontent %}
+  <div class="container welcome">
+    <h3 class="text-muted">Welcome. To generate your report, upload your SNP file below.</h3>
+    <form id="target" action="upload" method="post" enctype="multipart/form-data">
+      <br /><br />
+      <input type="file" name="file">
+      <input type="submit" value="Upload" id="dataConfirm">
+    </form>
+  </div>
+  <script>
+    $("#dataConfirm").confirm({
+      title:"Would you like to release your genetic data to researchers?",
+      text:"Some reasons why you should consider donating:",
+      confirm: function(button) {
+          alert("Thank you for contributing to genomic research!");
+          $( "#target" ).submit();
+      },
+      cancel: function(button) {
+          alert("Your genetic data will not be saved.");
+          $( "#target" ).submit();
+      },
+      confirmButton: "Donate!",
+      cancelButton: "No thanks"
+    });
+  </script>
+  <script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
+  <script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
+{% endblock %}
