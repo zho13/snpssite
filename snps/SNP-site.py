@@ -1,6 +1,5 @@
 from __future__ import print_function # In python 2.7
-import sys
-import os
+import os, time, sys
 import os.path
 from settings import APP_STATIC
 
@@ -16,17 +15,46 @@ from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
 from flask_user import login_required, UserManager, UserMixin, SQLAlchemyAdapter
 
+
+from flask import current_app
+from flask.ext.login import current_user
+
 app = create_app()
 # For a given file, return whether it's an allowed type or not
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
 
+@app.route('/test')
+def test():
+    return render_template('reports/1.html')
+
 @app.route('/')
 def index():
     # Remove existing report
-    if os.path.exists('templates/new_report.html'):
-        os.remove('templates/new_report.html')
+    #if os.path.exists('templates/new_report.html'):
+    #    os.remove('templates/new_report.html')
+    return redirect(url_for('home'))
+
+# for testing purposes only
+@app.route('/delete')
+def delete():
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    path = os.path.join(BASE_DIR, 'uploads')
+    now = time.time()
+    for f in os.listdir(path):
+        filename = os.path.join(path, f)
+        sys.stdout.write("\n\n%s\n\n" % filename)
+        # User SNP files expire after 30 days
+        EXPIRATION_TIME = 30 * 86400
+        if os.stat(filename).st_mtime < now - EXPIRATION_TIME:
+            if os.path.isfile(filename):
+                os.remove(filename)  
+    #user_manager =  current_app.user_manager
+    #db_adapter = user_manager.db_adapter
+    #users = db_adapter.UserClass.query.all()
+    #for user in users:
+    #    sys.stdout.write("\n\n\n%s\n\n\n" % user.__dict__)
     return redirect(url_for('home'))
 
 @app.route('/home')
@@ -37,8 +65,10 @@ def home():
 @app.route('/report')
 @login_required
 def report():
-    if (os.path.exists('templates/new_report.html') == True):
-        return render_template('new_report.html')
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    filename = os.path.join(BASE_DIR, 'templates/reports/' + str(current_user.id) + '.html')
+    if (os.path.exists(filename) == True):
+        return render_template('reports/' + str(current_user.id) + '.html')
     else:
         return render_template('upload.html')
         #return render_template('no_report.html')
@@ -118,13 +148,18 @@ def upload():
     file = request.files['file']
     # Check if the file is one of the allowed types/extensions
     if file and allowed_file(file.filename):
-        # Make the filename safe, remove unsupported chars
-        filename = secure_filename(file.filename)
+        # The user's SNP file is stored in the uploads folder as the user id
+        filename = str(current_user.id) + '.txt'
         
         # Move the file form the temporal folder to
         # the upload folder we setup
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         
+        # Save filename in database
+        #user_manager =  current_app.user_manager
+        #db_adapter = user_manager.db_adapter
+        #db_adapter.update_object(db_adapter.UserClass, snp_file=filename)
+
         user_rsids, rsid_genotype_map = parse_23andMe(filename)
 
         # Choose a filename to save the most important SNPS (rsid, Association.id)
@@ -138,9 +173,11 @@ def upload():
         # Save a copy of the dynamically-generated html for later use (if user wants
         # to navigate the website and come back to it later)
         generated_report = render_template('report.html', matches=matches)
-        with open('templates/new_report.html', 'wb') as f:
+        BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+        new_filename = os.path.join(BASE_DIR, 'templates/reports/' + str(current_user.id) + '.html')
+        with open(new_filename, 'w+') as f:
             f.write(generated_report)
-        return generated_report
+        return render_template('reports/' + str(current_user.id) + '.html')
 
     else:
         return render_template('retry.html')
@@ -151,5 +188,6 @@ def shutdown_session(exception=None):
 
 if __name__ == '__main__':
     app.run(
+        host='0.0.0.0',
         debug=True
     )

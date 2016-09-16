@@ -16,18 +16,24 @@
   </div>
   <script>
     $("#dataConfirm").confirm({
+      var donate = false;
       title:"Would you like to release your genetic data to researchers?",
       text:"Some reasons why you should consider donating:",
       confirm: function(button) {
+          //KEEP FILE
+          donate = true;
           alert("Thank you for contributing to genomic research!");
           $( "#target" ).submit();
       },
       cancel: function(button) {
+          //DELETE FILE AFTER GENERATING REPORT
+          donate = false;
           alert("Your genetic data will not be saved.");
           $( "#target" ).submit();
       },
       confirmButton: "Donate!",
       cancelButton: "No thanks"
+      return donate;
     });
   </script>
   <script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>

@@ -15,13 +15,13 @@ class ConfigClass(object):
     # Flask-Mail settings
     MAIL_USERNAME =           os.getenv('MAIL_USERNAME',        'snpssite@gmail.com')
     MAIL_PASSWORD =           os.getenv('MAIL_PASSWORD',        'curispassword')
-    MAIL_DEFAULT_SENDER =     os.getenv('MAIL_DEFAULT_SENDER',  '"MyApp" <noreply@example.com>')
+    MAIL_DEFAULT_SENDER =     os.getenv('MAIL_DEFAULT_SENDER',  '"SNPS Website" <noreply@example.com>')
     MAIL_SERVER =             os.getenv('MAIL_SERVER',          'smtp.gmail.com')
     MAIL_PORT =           int(os.getenv('MAIL_PORT',            '465'))
     MAIL_USE_SSL =        int(os.getenv('MAIL_USE_SSL',         True))
 
     # Flask-User settings
-    USER_APP_NAME        = "AppName"                # Used by email templates
+    USER_APP_NAME        = "SNPSsite"                # Used by email templates
 
 def create_app():
     """ Flask application factory """
@@ -33,7 +33,9 @@ def create_app():
     # Setup Flask app and app.config
     app.config.from_object(__name__+'.ConfigClass')
     # Path to the upload directory
-    app.config['UPLOAD_FOLDER'] = 'uploads/'
+    APP_ROOT = os.path.dirname(os.path.abspath(__file__))
+    UPLOAD_FOLDER = os.path.join(APP_ROOT, 'uploads')
+    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
     # Acceptatble extensions for upload
     app.config['ALLOWED_EXTENSIONS'] = set(['txt'])
     
@@ -58,6 +60,9 @@ def create_app():
         active = db.Column('is_active', db.Boolean(), nullable=False, server_default='0')
         first_name = db.Column(db.String(100), nullable=False, server_default='')
         last_name = db.Column(db.String(100), nullable=False, server_default='')
+
+        # User SNP file information
+        #snp_file = db.Column(db.String(255))
 
     # Create all database tables
     db.create_all()

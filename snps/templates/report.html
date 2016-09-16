@@ -77,10 +77,10 @@
 
         <div class="info {{ repute_class }} {{ btn_num }}" value="{{ btn_num }}" style="display:none">
           <button class="close close-btn" aria-label="close">&times;</button>
-          <div class="container col-md-12 info-header">
+          <div class="col-md-12 info-header">
             <h3 class="info-header col-md-8" align="left">{{ match.description }}</h3>
             <!-- eventually replace link, summary, risk, studies, etc. -->
-            <h3 class="info-header col-md-4" align="right"><a href="http://www.snpedia.com/index.php/Gs141" title="Read more about this SNP">{{ match.snp.rs_id }}</a></h3>
+            <p class="info-header col-md-4" align="right" style="padding-top: 0px"><a href="http://www.snpedia.com/index.php/Gs141" title="Read more about this SNP">RSID: {{ match.snp.rs_id }}</a><br><a href="http://www.snpedia.com/index.php/Gs141" title="Read more about this SNP">PubMed ID: replace</a></p>
           </div>
           <p>{{ match.snp }} </p>
           <p>{{ match }} </p>

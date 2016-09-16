@@ -6,5 +6,4 @@ a couple notes to get started:
 
 commands:
 
-source sqlalchemy-workspace/bin/activate
-python snps/SNP-site.py
+source sqlalchemy-workspace/bin/activate && python snps/SNP-site.py
