@@ -8,12 +8,12 @@
 {% block navcontent %}
   <div class="alert alert-info">
     <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-    <strong>Info!</strong> Click on table headers to sort. Use the checkboxes to view more information. A few notes: how to let a users create their own top_SNPS.txt file?
+    <strong>Info!</strong> Click on table headers to sort. Use the checkboxes to view more information.
   </div>
   <div class="content-scroll center">
     <div class="col-md-5">
       <div class="scroll-table">
-        <div class="form-group pull-right">
+        <div class="form-group pull-right" style="margin-right: 1px">
           <input type="text" class="search form-control" placeholder="Search">
         </div>
         <span class="counter pull-right"></span>
@@ -32,7 +32,11 @@
           	{% set count = 1 %}
           	{% for match in matches %}
           	{% set btn_num = 'button' ~ count %}
-            
+            {% if count <= 3 %}
+            {% set checked_status = 'checked=' %}
+            {% else %}
+            {% set checked_status = '' %}
+            {% endif %}
             <!-- determine icon -->
             {% if match.repute == "Good" %}
             {% set color = 'green' %}
@@ -46,7 +50,7 @@
             {% endif %}
             
             <tr>
-              <td><input type="checkbox" value="{{ btn_num }}"></td>
+              <td><input type="checkbox" value="{{ btn_num }}" {{ checked_status }}></td>
               <td>{{ match.snp.rs_id }}</td>
               <td>{{ match.description }}</td>
               <!-- eventually replace "??" with calculated risk -->
@@ -65,7 +69,11 @@
         {% set count = 1 %}
         {% for match in matches %}
         {% set btn_num = 'button' ~ count %}
-
+        {% if count <= 3 %}
+        {% set style_status = '' %}
+        {% else %}
+        {% set style_status = 'display:none' %}
+        {% endif %}
         <!-- determine color of box -->
         {% if match.repute == "Good" %}
           {% set repute_class = 'up' %}
@@ -75,7 +83,7 @@
           {% set repute_class = 'flat' %}
         {% endif %}
 
-        <div class="info {{ repute_class }} {{ btn_num }}" value="{{ btn_num }}" style="display:none">
+        <div class="info {{ repute_class }} {{ btn_num }}" value="{{ btn_num }}" style="{{ style_status }}">
           <button class="close close-btn" aria-label="close">&times;</button>
           <div class="col-md-12 info-header">
             <h3 class="info-header col-md-8" align="left">{{ match.description }}</h3>

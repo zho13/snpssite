@@ -25,16 +25,16 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
 
-@app.route('/test')
-def test():
-    return render_template('reports/1.html')
-
 @app.route('/')
 def index():
     # Remove existing report
     #if os.path.exists('templates/new_report.html'):
     #    os.remove('templates/new_report.html')
     return redirect(url_for('home'))
+
+@app.route('/test', methods=['GET', 'POST'])
+def test():
+    return send_from_directory('uploads', '1.txt')
 
 # for testing purposes only
 @app.route('/delete')
@@ -188,6 +188,5 @@ def shutdown_session(exception=None):
 
 if __name__ == '__main__':
     app.run(
-        host='0.0.0.0',
         debug=True
     )
