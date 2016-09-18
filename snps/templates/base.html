@@ -1,11 +1,7 @@
-{% extends "jumbo_base.html" %}
-{% block title %}Base{% endblock %}
-{% block nav %}
-  <li><a href="{{ url_for('report') }}">Report</a></li>
-  <li><a href="{{ url_for('about') }}">About</a></li>
-  <li><a href="{{ url_for('contact') }}">Contact</a></li>
-{% endblock %}
-{% block jumbocontent %}
+{% extends "navigation_base.html" %}
+ {% block title %}SNPSSITE{% endblock %}
+{% block navcontent %}
+<section>
   <div style="padding-left:350px; padding-right:350px">
     <div id="main-div" class="with-margins">
     {# One-time system messages called Flash messages #}
@@ -24,4 +20,5 @@
     {% block main %}{% block content %}{% endblock %}{% endblock %}
   </div>
 </div>
+</section>
 {% endblock %}

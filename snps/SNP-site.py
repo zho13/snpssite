@@ -60,7 +60,7 @@ def delete():
 
 @app.route('/home')
 def home():
-    return render_template('home.html')
+    return render_template('home copy.html')
 
 # Access granted only to account holders
 @app.route('/report')
