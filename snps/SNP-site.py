@@ -34,7 +34,8 @@ def index():
 
 @app.route('/test', methods=['GET', 'POST'])
 def test():
-    return send_from_directory('uploads', '1.txt')
+    return render_template('reports/1.html')
+    #return send_from_directory('uploads', '1.txt')
 
 # for testing purposes only
 @app.route('/delete')
@@ -172,7 +173,7 @@ def upload():
 
         # Save a copy of the dynamically-generated html for later use (if user wants
         # to navigate the website and come back to it later)
-        generated_report = render_template('report.html', matches=matches)
+        generated_report = render_template('report2.html', matches=matches)
         BASE_DIR = os.path.dirname(os.path.abspath(__file__))
         new_filename = os.path.join(BASE_DIR, 'templates/reports/' + str(current_user.id) + '.html')
         with open(new_filename, 'w+') as f:

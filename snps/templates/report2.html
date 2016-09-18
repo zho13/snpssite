@@ -1,0 +1,42 @@
+{% extends "navigation_base.html" %}
+{% block title %}Report{% endblock %}
+{% block nav %}
+  <li class="active"><a href="{{ url_for('report') }}">Report</a></li>
+  <li><a href="{{ url_for('about') }}">About</a></li>
+  <li><a href="{{ url_for('contact') }}">Contact</a></li>
+{% endblock %}
+{% block navcontent %}
+  {% for match in matches %}
+    <div class="card">
+      <div class="card-block">
+        <h4 class="card-title">{{ match.description }}</h4>
+        <h6 class="card-subtitle text-muted">{{ match.snp.rs_id }}</h6>
+      </div>
+      <div class="card-block">
+        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+        <a href="#" class="card-link">Card link</a>
+        <a href="#" class="card-link">Another link</a>
+      </div>
+    </div>
+  {% endfor %}
+    <div class="card">
+      <div class="card-header">
+        Featured
+      </div>
+      <div class="card-block">
+        <h4 class="card-title">Card title</h4>
+        <h6 class="card-subtitle text-muted">Support card subtitle</h6>
+      </div>
+      <div class="card-block">
+        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+        <a href="#" class="card-link">Card link</a>
+        <a href="#" class="card-link">Another link</a>
+      </div>
+    </div>
+
+  <!-- jQuery first, then Tether, then Bootstrap JS. -->
+  <script src="{{ url_for('static',filename='bootstrap-4.0.0-alpha.4/dist/js/bootstrap.min.js') }}" integrity="VjEeINv9OSwtWFLAtmc4JCtEJXXBub00gtSnszmspDLCtC0I4z4nqz7rEFbIZLLU" crossorigin="anonymous"></script>
+  <script src="{{ url_for('static',filename='bootstrap-4.0.0-alpha.4/dist/js/tether.min.js') }}" integrity="sha384-Plbmg8JY28KFelvJVai01l8WyZzrYWG825m+cZ0eDDS1f7d/js6ikvy1+X+guPIB" crossorigin="anonymous"></script>
+  <script src="{{ url_for('static',filename='bootstrap-4.0.0-alpha.4/dist/js/jquery.min.js') }}" integrity="sha384-THPy051/pYDQGanwU6poAc/hOdQxjnOEXzbT+OuUAFqNqFjL+4IGLBgCJC3ZOShY" crossorigin="anonymous"></script>
+
+{% endblock %}
