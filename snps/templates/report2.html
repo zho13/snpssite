@@ -1,17 +1,25 @@
 {% extends "navigation_base.html" %}
 {% block title %}Report{% endblock %}
 {% block navcontent %}
-  {% for match in matches %}
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 text-center">
+        <h2 class="section-heading">Your Report</h2>
+        <hr class="primary">
+      </div>
+    </div>
+  </div>
   <aside>
+  {% for match in matches %}
     <div class="card">
       <div class="card-block">
         <h4 class="card-title">{{ match.description }}</h4>
-        <h6 class="card-subtitle text-muted">{{ match.snp.rs_id }}</h6>
+        <h6 class="card-subtitle text-muted">Keywords: </h6>
       </div>
       <div class="card-block">
-        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-        <a href="#" class="card-link">Card link</a>
-        <a href="#" class="card-link">Another link</a>
+        <p class="card-text">Your Genotype: {{ match.genotype }} | P-Value: {{ match.pvalue }} </p>
+        <a href="http://www.ncbi.nlm.nih.gov/pubmed/?term={{ match.paper.pubmed_id }}" class="card-link">PubMed Link: {{ match.paper.pubmed_id }} </a>
+        <a href="http://www.snpedia.com/index.php/rs{{ match.snp.rs_id }}" class="card-link">SNPedia Link: {{ match.snp.rs_id }}</a>
       </div>
     </div>
   {% endfor %}

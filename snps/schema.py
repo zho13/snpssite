@@ -1,9 +1,9 @@
 from sqlalchemy.schema import Column, ForeignKey
 from sqlalchemy.types import String, Integer, Float, Boolean, LargeBinary
 from sqlalchemy.orm import relationship
-from sqlalchemy import func
+from sqlalchemy import func, Table
 
-from database import Base
+from __init__ import Base, engine
 
 # ----------------------------------------------------------------------
 # Database models
@@ -36,6 +36,11 @@ class SNP(Base):
     % (str(self.id), str(self.rs_id), self.interest, self.ref, str(self.chrom), \
       str(self.position), self.gene, self.omim, self.pharmgkb)
 
+phenotype_join_table = Table('phenotype_join_table', Base.metadata,
+    Column('left_id', Integer, ForeignKey('phenotypes.id')),
+    Column('right_id', Integer, ForeignKey('phenotypes.id'))
+)
+
 class Phenotype(Base):
   __tablename__ = 'phenotypes'
   id = Column( Integer, primary_key=True, nullable=False, autoincrement=True)
@@ -45,19 +50,9 @@ class Phenotype(Base):
   synonyms        = Column( String(1000) )
   ontology_ref    = Column( String(1000) )
   misc            = Column( String(1000) )
-
-  def __init__(self, id=None, name=None, category=None, source=None, synonyms=None, \
-  ontology_ref=None, misc=None):
-    self.name             = name
-    self.category         = category
-    self.source           = source
-    self.synonyms         = synonyms
-    self.ontology_ref     = ontology_ref
-    self.misc             = misc
-
-  def __repr__(self):
-    return '<Phenotype: name=%s category=%s source=%s synonyms=%s ontology_ref=%s misc=%s>' \
-    % (self.name, self.category, self.source, self.synonyms, self.ontology_ref, self.misc)
+  equivalents     = relationship("Phenotype", secondary=phenotype_join_table,
+                                  primaryjoin=id==phenotype_join_table.c.left_id,
+                                  secondaryjoin=id==phenotype_join_table.c.right_id)
 
 class Association(Base):
   __tablename__ = 'associations'
@@ -133,25 +128,26 @@ class Paper(Base):
   associations    = relationship(Association, backref='papers')
 
   def __init__(self, id=None, pubmed_id=None, pmc_id=None, authors=None, journal=None, \
-    open_access=None, snpedia_open=None, title=None, abstract=None, pdf_id=None):
-    self.pubmed_id        = pubmed_id
-    self.pmc_id           = pmc_id
-    self.authors          = authors
-    self.journal          = journal
-    self.open_access      = open_access
-    self.snpedia_open     = snpedia_open
-    self.title            = title
-    self.abstract         = abstract
-    self.pdf_id           = pdf_id
-    self.pdf              = pdf
-    self.files            = files
-    self.associations     = associations
+    open_access=None, snpedia_open=None, title=None, abstract=None, pdf_id=None, pdf=None, \
+    files=None, associations=None):
+    self.pubmed_id          = pubmed_id
+    self.pmc_id             = pmc_id
+    self.authors            = authors
+    self.journal            = journal
+    self.open_access        = open_access
+    self.snpedia_open       = snpedia_open
+    self.title              = title
+    self.abstract           = abstract
+    self.pdf_id             = pdf_id
+    self.pdf                = pdf
+    self.files              = files
+    self.associations       = associations
 
   def __repr__(self):
-    return '<Paper: pubmed_id=%s pmc_id=%s authors=%s journal=%s open_access=%s snpedia_open=%s title=%s \
-    abstract=%s pdf_id=%s>' \
+    return '<Association: pubmed_id=%s pmc_id=%s authors=%s journal=%s open_access=%s snpedia_open=%s \
+    title=%s abstract=%s pdf_id=%s pdf=%s files=%s associations=%s>' \
     % (str(self.pubmed_id), str(self.pmc_id), self.authors, self.journal, self.open_access, self.snpedia_open, \
-    self.title, self.abstract, str(self.pdf_id))
+      self.title, self.abstract, str(self.pdf_id), self.pdf, self.files, self.associations)
 
 class File(Base):
   __tablename__ = 'files'
@@ -160,15 +156,6 @@ class File(Base):
   paper           = relationship('Paper', primaryjoin='Paper.id==File.paper_id')
   filename        = Column( String(1000) ) # relative to db_dir
   format          = Column( String(5) ) # pdf, excel, tgz
-
-  def __init__(self, id=None, paper_id=None, paper=None, filename=None, format=None):
-    self.paper_id         = paper_id
-    self.paper            = paper
-    self.filename         = filename
-    self.format           = format
-
-  def __repr__(self):
-    return '<File: paper_id=%s filename=%s format=%s>' % (str(self.paper_id), self.filename, self.format)
 
 class SnpediaEvidence(Base):
   __tablename__ = 'snpedia_evidence'
@@ -180,14 +167,7 @@ class SnpediaEvidence(Base):
   snpedia_open    = Column( Boolean )
   automatic       = Column( Boolean )
 
-  def __init__(self, id=None, snp_id=None, paper_id=None, snpedia_open=None, automatic=None):
-    self.snp_id           = snp_id
-    self.paper_id         = paper_id
-    self.snp              = snp
-    self.paper            = paper
-    self.snpedia_open     = snpedia_open
-    self.automatic        = automatic
+# ----------------------------------------------------------------------------
 
-  def __repr__(self):
-    return '<SnpediaEvidence: snp_id=%s paper_id=%s snpedia_open=%s automatic=%s>' \
-    % (str(self.snp_id), str(self.paper_id), self.snpedia_open, self.automatic)
+def init_db():
+  Base.metadata.create_all(bind=engine)

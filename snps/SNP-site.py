@@ -19,6 +19,9 @@ from flask_user import login_required, UserManager, UserMixin, SQLAlchemyAdapter
 from flask import current_app
 from flask.ext.login import current_user
 
+from sqlalchemy import inspect
+from sqlalchemy import create_engine
+
 app = create_app()
 # For a given file, return whether it's an allowed type or not
 def allowed_file(filename):
@@ -34,7 +37,17 @@ def index():
 
 @app.route('/test', methods=['GET', 'POST'])
 def test():
-    return render_template('reports/1.html')
+    #engine = create_engine('sqlite://///Users/zandraho/snps/tmp/gwas.sql', convert_unicode=True)
+    #inspector = inspect(engine)
+    #for table_name in inspector.get_table_names():
+    #   for column in inspector.get_columns(table_name):
+    #        sys.stdout.write("\n\n\n Column: %s\n\n\n" % column['name'])
+         
+    top_SNPs = db_session.query(Association).all()
+    for e in top_SNPs:
+        sys.stdout.write("\n\n\n%s\n\n\n" % e)
+    #sys.stdout.write("\n\n\n%s\n\n\n" % top_SNPs)
+    return render_template('reports/test.html')
     #return send_from_directory('uploads', '1.txt')
 
 # for testing purposes only
