@@ -1,12 +1,8 @@
 {% extends "navigation_base.html" %}
 {% block title %}Report{% endblock %}
-{% block nav %}
-  <li class="active"><a href="{{ url_for('report') }}">Report</a></li>
-  <li><a href="{{ url_for('about') }}">About</a></li>
-  <li><a href="{{ url_for('contact') }}">Contact</a></li>
-{% endblock %}
 {% block navcontent %}
   {% for match in matches %}
+  <aside>
     <div class="card">
       <div class="card-block">
         <h4 class="card-title">{{ match.description }}</h4>
@@ -33,6 +29,7 @@
         <a href="#" class="card-link">Another link</a>
       </div>
     </div>
+  </aside>
 
   <!-- jQuery first, then Tether, then Bootstrap JS. -->
   <script src="{{ url_for('static',filename='bootstrap-4.0.0-alpha.4/dist/js/bootstrap.min.js') }}" integrity="VjEeINv9OSwtWFLAtmc4JCtEJXXBub00gtSnszmspDLCtC0I4z4nqz7rEFbIZLLU" crossorigin="anonymous"></script>

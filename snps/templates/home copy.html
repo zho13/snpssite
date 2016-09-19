@@ -72,8 +72,8 @@
     <aside class="bg-dark">
         <div class="container text-center">
             <div class="call-to-action">
-                <h2>Free Download at Start Bootstrap!</h2>
-                <a href="http://startbootstrap.com/template-overviews/creative/" class="btn btn-default btn-xl sr-button">Download Now!</a>
+                <h2>Free report at SNPSSITE!</h2>
+                <a href="{{ url_for('report') }}" class="btn btn-default btn-xl sr-button">Get Your Report Now!</a>
             </div>
         </div>
     </aside>
@@ -96,5 +96,37 @@
                 </div>
             </div>
         </div>
+    </section>
+    <section id="report">
+          <div class="container welcome">
+    <h3 class="text-muted">Welcome. To generate your report, upload your SNP file below.</h3>
+    <form id="target" action="upload" method="post" enctype="multipart/form-data">
+      <br /><br />
+      <input type="file" name="file">
+      <input type="submit" value="Upload" id="dataConfirm">
+    </form>
+  </div>
+  <script>
+    $("#dataConfirm").confirm({
+      var donate = false;
+      title:"Would you like to release your genetic data to researchers?",
+      text:"Some reasons why you should consider donating:",
+      confirm: function(button) {
+          donate = true;
+          alert("Thank you for contributing to genomic research!");
+          $( "#target" ).submit();
+      },
+      cancel: function(button) {
+          donate = false;
+          alert("Your genetic data will not be saved.");
+          $( "#target" ).submit();
+      },
+      confirmButton: "Donate!",
+      cancelButton: "No thanks"
+      return donate;
+    });
+  </script>
+  <script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
+  <script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
     </section>
 {% endblock %}

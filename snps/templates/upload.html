@@ -1,11 +1,7 @@
-{% extends "jumbo_base.html" %}
+{% extends "navigation_base.html" %}
 {% block title %}Upload{% endblock %}
-{% block nav %}
-    <li class="active"><a href="{{ url_for('report') }}">Report</a></li>
-    <li><a href="{{ url_for('about') }}">About</a></li>
-    <li><a href="{{ url_for('contact') }}">Contact</a></li>
-{% endblock %}
-{% block jumbocontent %}
+{% block navcontent %}
+<aside>
   <div class="container welcome">
     <h3 class="text-muted">Welcome. To generate your report, upload your SNP file below.</h3>
     <form id="target" action="upload" method="post" enctype="multipart/form-data">
@@ -14,6 +10,7 @@
       <input type="submit" value="Upload" id="dataConfirm">
     </form>
   </div>
+</aside>
   <script>
     $("#dataConfirm").confirm({
       var donate = false;
