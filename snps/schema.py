@@ -2,7 +2,7 @@ from sqlalchemy.schema import Column, ForeignKey
 from sqlalchemy.types import String, Integer, Float, Boolean, LargeBinary
 from sqlalchemy.orm import relationship
 from sqlalchemy import func, Table
-
+import __init__
 from __init__ import Base, engine
 
 # ----------------------------------------------------------------------
@@ -54,6 +54,21 @@ class Phenotype(Base):
                                   primaryjoin=id==phenotype_join_table.c.left_id,
                                   secondaryjoin=id==phenotype_join_table.c.right_id)
 
+  def __init__(self, id=None, name=None, category=None, source=None, synonyms=None, \
+  ontology_ref=None, misc=None, equivalents=None):
+    self.name               = name
+    self.category           = category
+    self.source             = source
+    self.synonyms           = synonyms
+    self.ontology_ref       = ontology_ref
+    self.misc               = misc
+    self.equivalents        = equivalents
+
+  def __repr__(self):
+    return '<Phenotype: id=%s name=%s category=%s source=%s synonyms=%s ontology_ref=%s misc=%s equivalents=%s' \
+    % (str(self.id), self.name, self.category, self.source, self.synonyms, self.ontology_ref, \
+      self.misc, self.equivalents)
+
 class Association(Base):
   __tablename__ = 'associations'
   id = Column( Integer, primary_key=True, nullable=False, autoincrement=True)
@@ -104,10 +119,10 @@ class Association(Base):
     self.paper            = paper
 
   def __repr__(self):
-    return '<Association: allele=%s genotype=%s repute=%s description=%s magnitude=%s pvalue=%s \
+    return '<Association: id=%s allele=%s genotype=%s repute=%s description=%s magnitude=%s pvalue=%s \
     oddsratio=%s beta=%s beta_params=%s freq=%s population=%s source=%s controls=%s cases=%s snp_id=%s \
     phenotype_id=%s paper_id=%s>' \
-    % (self.allele, self.genotype, self.repute, self.description, str(self.magnitude), str(self.pvalue), \
+    % (str(self.id), self.allele, self.genotype, self.repute, self.description, str(self.magnitude), str(self.pvalue), \
       str(self.oddsratio), str(self.beta), self.beta_params, str(self.freq), self.population, self.source, \
       str(self.controls), str(self.cases), str(self.snp_id), str(self.phenotype_id), str(self.paper_id))
 
@@ -144,9 +159,9 @@ class Paper(Base):
     self.associations       = associations
 
   def __repr__(self):
-    return '<Association: pubmed_id=%s pmc_id=%s authors=%s journal=%s open_access=%s snpedia_open=%s \
+    return '<Paper: id=%s pubmed_id=%s pmc_id=%s authors=%s journal=%s open_access=%s snpedia_open=%s \
     title=%s abstract=%s pdf_id=%s pdf=%s files=%s associations=%s>' \
-    % (str(self.pubmed_id), str(self.pmc_id), self.authors, self.journal, self.open_access, self.snpedia_open, \
+    % (str(self.id), str(self.pubmed_id), str(self.pmc_id), self.authors, self.journal, self.open_access, self.snpedia_open, \
       self.title, self.abstract, str(self.pdf_id), self.pdf, self.files, self.associations)
 
 class File(Base):

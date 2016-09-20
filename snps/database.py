@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
-engine = create_engine('sqlite://///Users/zandraho/snps/tmp/gwas-snpedia-genotypes.sql', convert_unicode=True)
+engine = create_engine('sqlite://///Users/zandraho/snps/tmp/gwas-catalog.sql', convert_unicode=True)
 db_session = scoped_session(sessionmaker(autocommit=False,
                                          autoflush=False,
                                          bind=engine))

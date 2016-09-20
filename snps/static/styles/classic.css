@@ -1,7 +1,9 @@
+.card-link a {
+	font-size: 25% !important;
+}
 .navbar a {
     color: black !important;
 }
-
 body {
 	padding-top: 50px;
 }
@@ -41,33 +43,27 @@ p {
 	height: 650px !important;
 	overflow: auto;
 }
-
 .content-scroll {
 	margin-right: 20px;
 	height: 670px !important;
 	overflow: auto;
 }
-
 .image {
 	/* http://www.pageresource.com/wallpapers/68049/abstract-blue-and-green-with-dark-background-hd-wallpaper.html */
 	background-image: url("jumbo_image.jpg");
 	color: white;
 }
-
 .results tr[visible='false'],
 .no-result {
   display:none;
 }
-
 .results tr[visible='true'] {
   display:table-row;
 }
-
 .counter {
   padding:8px; 
   color:#ccc;
 }
-
 .alert {
 	margin-top: 20px;
 }
@@ -80,7 +76,6 @@ p {
 	margin-right: 10px;
 	margin-top: 5px;
 }
-
 .info-header {
 	margin-top: 0px;
 	margin-bottom: 10px;
@@ -91,10 +86,11 @@ p {
 	display:block;
 	margin:auto;
 	margin-bottom:.75rem;
-	width: 70%;
+	width: 50%;
 	background-color:#fff;
 	border-radius:.25rem;
-	border:1px solid rgba(0,0,0,.125)
+	border:1px solid rgba(0,0,0,.125);
+	font-family: 'Merriweather', 'Helvetica Neue', Arial, sans-serif;
 }
 .card-block {
 	padding:1.25rem
@@ -105,11 +101,16 @@ p {
 	clear:both
 }
 .card-title {
+	font-weight: bold;
+	font-family: 'Merriweather', 'Helvetica Neue', Arial, sans-serif;
+	font-size: 150%;
 	margin-bottom:.75rem
 }
 .card-subtitle {
+	font-weight: bold;
+	font-family: 'Merriweather', 'Helvetica Neue', Arial, sans-serif;
 	margin-top:-.375rem;
-	margin-bottom:0
+	margin-bottom:0;
 }
 .card-text:last-child {
 	margin-bottom:0
@@ -146,20 +147,59 @@ p {
 	background-color:#f5f5f5;
 	border-top:1px solid rgba(0,0,0,.125)
 }
-.card-footer::after{content:"";display:table;clear:both}
-.card-footer:last-child{border-radius:0 0 .25rem .25rem}
-.card-header-tabs{margin-right:-.625rem;margin-bottom:-.75rem;margin-left:-.625rem;border-bottom:0}
-.card-header-pills{margin-right:-.625rem;margin-left:-.625rem}
-.card-primary{background-color:#0275d8;border-color:#0275d8}
-.card-primary .card-footer,.card-primary .card-header{background-color:transparent}
-.card-success{background-color:#5cb85c;border-color:#5cb85c}
-.card-success .card-footer,.card-success .card-header{background-color:transparent}
-.card-info{background-color:#5bc0de;border-color:#5bc0de}
-.card-info .card-footer,.card-info .card-header{background-color:transparent}
-.card-warning{background-color:#f0ad4e;border-color:#f0ad4e}
-.card-warning .card-footer,.card-warning .card-header{background-color:transparent}
-.card-danger{background-color:#d9534f;border-color:#d9534f}
-.card-danger .card-footer,.card-danger .card-header{background-color:transparent}
+.card-footer::after {
+	content:"";
+	display:table;
+	clear:both
+}
+.card-footer:last-child {
+	border-radius:0 0 .25rem .25rem
+}
+.card-header-tabs {
+	margin-right:-.625rem;
+	margin-bottom:-.75rem;
+	margin-left:-.625rem;
+	border-bottom:0
+}
+.card-header-pills {
+	margin-right:-.625rem;
+	margin-left:-.625rem
+}
+.card-primary {
+	background-color:#0275d8;
+	border-color:#0275d8
+}
+.card-primary .card-footer,.card-primary .card-header {
+	background-color:transparent
+}
+.card-success {
+	background-color:#5cb85c;
+	border-color:#5cb85c
+}
+.card-success .card-footer,.card-success .card-header {
+	background-color:transparent
+}
+.card-info {
+	background-color:#5bc0de;
+	border-color:#5bc0de
+}
+.card-info .card-footer,.card-info .card-header {
+	background-color:transparent
+}
+.card-warning {
+	background-color:#f0ad4e;
+	border-color:#f0ad4e
+}
+.card-warning .card-footer,.card-warning .card-header {
+	background-color:transparent
+}
+.card-danger {
+	background-color:#d9534f;
+	border-color:#d9534f
+}
+.card-danger .card-footer,.card-danger .card-header {
+	background-color:transparent
+}
 .card-outline-primary{background-color:transparent;border-color:#0275d8}
 .card-outline-secondary{background-color:transparent;border-color:#ccc}
 .card-outline-info{background-color:transparent;border-color:#5bc0de}

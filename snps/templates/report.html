@@ -1,116 +1,41 @@
 {% extends "navigation_base.html" %}
 {% block title %}Report{% endblock %}
-{% block nav %}
-  <li class="active"><a href="{{ url_for('report') }}">Report</a></li>
-  <li><a href="{{ url_for('about') }}">About</a></li>
-  <li><a href="{{ url_for('contact') }}">Contact</a></li>
-{% endblock %}
 {% block navcontent %}
-  <div class="alert alert-info">
-    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-    <strong>Info!</strong> Click on table headers to sort. Use the checkboxes to view more information.
-  </div>
-  <div class="content-scroll center">
-    <div class="col-md-5">
-      <div class="scroll-table">
-        <div class="form-group pull-right" style="margin-right: 1px">
-          <input type="text" class="search form-control" placeholder="Search">
-        </div>
-        <span class="counter pull-right"></span>
-        <table class="sortable table table-condensed table-hover results">
-          <thead>
-            <tr>
-              <th>View</th>
-              <th>rsid</th>
-              <th>Description</th>
-              <th>Risk</th>
-              <th>Magnitude<th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- link checkboxes with description boxes -->
-          	{% set count = 1 %}
-          	{% for match in matches %}
-          	{% set btn_num = 'button' ~ count %}
-            {% if count <= 3 %}
-            {% set checked_status = 'checked=' %}
-            {% else %}
-            {% set checked_status = '' %}
-            {% endif %}
-            <!-- determine icon -->
-            {% if match.repute == "Good" %}
-            {% set color = 'green' %}
-            {% set icon = 'glyphicon-arrow-up' %}
-            {% elif match.repute == "Bad" %}
-            {% set icon = 'glyphicon-arrow-down' %}
-            {% set color = 'red' %}
-            {% else %}
-            {% set color = 'grey' %}
-            {% set icon = 'glyphicon-minus' %}
-            {% endif %}
-            
-            <tr>
-              <td><input type="checkbox" value="{{ btn_num }}" {{ checked_status }}></td>
-              <td>{{ match.snp.rs_id }}</td>
-              <td>{{ match.description }}</td>
-              <!-- eventually replace "??" with calculated risk -->
-              <td><span class="glyphicon {{ icon }}" style="color:{{ color }}">??</span></td>
-              <td>{{ match.magnitude }}</td>
-            </tr>
-            {% set count = count + 1 %}
-            {% endfor %}
-          </tbody>
-        </table>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 text-center" style="padding-top:5%">
+        <h2 class="section-heading">Your Report</h2>
+        <hr class="primary">
       </div>
     </div>
-    <div class="col-md-7">
-      <div class="scroll-table">
-        <!-- link checkboxes with description boxes -->
-        {% set count = 1 %}
-        {% for match in matches %}
-        {% set btn_num = 'button' ~ count %}
-        {% if count <= 3 %}
-        {% set style_status = '' %}
-        {% else %}
-        {% set style_status = 'display:none' %}
-        {% endif %}
-        <!-- determine color of box -->
-        {% if match.repute == "Good" %}
-          {% set repute_class = 'up' %}
-        {% elif match.repute == "Bad" %}
-          {% set repute_class = 'down' %}
-        {% else %}
-          {% set repute_class = 'flat' %}
-        {% endif %}
-
-        <div class="info {{ repute_class }} {{ btn_num }}" value="{{ btn_num }}" style="{{ style_status }}">
-          <button class="close close-btn" aria-label="close">&times;</button>
-          <div class="col-md-12 info-header">
-            <h3 class="info-header col-md-8" align="left">{{ match.description }}</h3>
-            <!-- eventually replace link, summary, risk, studies, etc. -->
-            <p class="info-header col-md-4" align="right" style="padding-top: 0px"><a href="http://www.snpedia.com/index.php/Gs141" title="Read more about this SNP">RSID: {{ match.snp.rs_id }}</a><br><a href="http://www.snpedia.com/index.php/Gs141" title="Read more about this SNP">PubMed ID: replace</a></p>
-          </div>
-          <p>{{ match.snp }} </p>
-          <p>{{ match }} </p>
-          <h4 align="center">Your Genotype: {{ match.genotype }} | Calculated Risk | Relevant Studies | Magnitude: {{ match.magnitude }} </h4>
-        </div>
-        {% set count = count + 1 %}
+  </div>
+  <aside>
+  {% for i in range(n) %}
+  {% set match = matches[i] %}
+  {% set user_genotype = user_genotypes[i] %}
+    <div class="card">
+      <div class="card-header">
+        {{ match.source }}
+      </div>
+      <div class="card-block">
+        <h4 class="card-title">{{ match.phenotype.name }}</h4>
+        <h6 class="card-subtitle text-muted">P-Value: {{ match.pvalue }} | Odds Ratio: {{ match.oddsratio }}</h6>
+      </div>
+      <div class="card-block">
+        <p class="card-text">Keywords: {{ match.phenotype.synonyms }}</p>
+        <p class="card-text"><b>{{ match.paper.journal }}:</b> {{ match.paper.title }}
+        <a href="http://www.ncbi.nlm.nih.gov/pubmed/?term={{ match.paper.pubmed_id }}" class="card-link" style="font-size:80%">Read Paper</a></p>
+        {% for entry in user_genotype %}
+          <div style="font-size:90%"><a href="http://www.snpedia.com/index.php/{{ entry[0] }}" class="card-link">{{ entry[0] }}</a> : {{ entry[1] }}</div><br>
         {% endfor %}
       </div>
     </div>
-  </div>
+  {% endfor %}
+  </aside>
 
-  <!-- From Codecademy on JQuery -->
-    <script src="{{ url_for('static',filename='styles/1.11.1.jquery.min.js') }}"></script>
-    <script src="{{ url_for('static',filename='styles/checkbox.js') }}"></script>
-    <script src="{{ url_for('static',filename='styles/searchable.js') }}"></script>
+  <!-- jQuery first, then Tether, then Bootstrap JS. -->
+  <script src="{{ url_for('static',filename='bootstrap-4.0.0-alpha.4/dist/js/bootstrap.min.js') }}" integrity="VjEeINv9OSwtWFLAtmc4JCtEJXXBub00gtSnszmspDLCtC0I4z4nqz7rEFbIZLLU" crossorigin="anonymous"></script>
+  <script src="{{ url_for('static',filename='bootstrap-4.0.0-alpha.4/dist/js/tether.min.js') }}" integrity="sha384-Plbmg8JY28KFelvJVai01l8WyZzrYWG825m+cZ0eDDS1f7d/js6ikvy1+X+guPIB" crossorigin="anonymous"></script>
+  <script src="{{ url_for('static',filename='bootstrap-4.0.0-alpha.4/dist/js/jquery.min.js') }}" integrity="sha384-THPy051/pYDQGanwU6poAc/hOdQxjnOEXzbT+OuUAFqNqFjL+4IGLBgCJC3ZOShY" crossorigin="anonymous"></script>
 
-  <!-- Bootstrap core JavaScript
-  ================================================== -->
-  <!-- Placed at the end of the document so the pages load faster -->
-  <script src="{{ url_for('static',filename='styles/1.11.3.jquery.min.js') }}"></script>
-  <script>window.jQuery || document.write('<script src="../bootstrap-3.3.6/assets/js/vendor/jquery.min.js"><\/script>')</script>
-  <script src="{{ url_for('static',filename='bootstrap-3.3.6/dist/js/bootstrap.min.js') }}"></script>
-  <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-  <script src="{{ url_for('static',filename='bootstrap-3.3.6/dist/js/ie10-viewport-bug-workaround.js') }}"></script>
 {% endblock %}
