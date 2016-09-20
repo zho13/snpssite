@@ -10,21 +10,35 @@
     </div>
   </div>
   <aside>
+  {% for snpedia_match in snpedia_matches %}
+    <div class="card">
+      <div class="card-header">
+        {{ snpedia_match.source }}
+      </div>
+      <div class="card-block">
+        <h4 class="card-title">{{ snpedia_match.description }}</h4>
+        <h6 class="card-subtitle text-muted">Magnitude: {{ snpedia_match.magnitude }} | Repute: {{ snpedia_match.repute }} | P-Value: {{ snpedia_match.pvalue }} | Odds Ratio: {{ snpedia_match.oddsratio }}</h6>
+      </div>
+      <div class="card-block">
+        <div style="font-size:90%"><a href="http://www.snpedia.com/index.php/{{ snpedia_match.snp.rs_id }}" class="card-link">{{ snpedia_match.snp.rs_id }}</a> : {{ snpedia_match.genotype }}</div>
+      </div>
+    </div>
+  {% endfor %}
   {% for i in range(n) %}
-  {% set match = matches[i] %}
+  {% set gwas_catalog_match = gwas_catalog_matches[i] %}
   {% set user_genotype = user_genotypes[i] %}
     <div class="card">
       <div class="card-header">
-        {{ match.source }}
+        {{ gwas_catalog_match.source }}
       </div>
       <div class="card-block">
-        <h4 class="card-title">{{ match.phenotype.name }}</h4>
-        <h6 class="card-subtitle text-muted">P-Value: {{ match.pvalue }} | Odds Ratio: {{ match.oddsratio }}</h6>
+        <h4 class="card-title">{{ gwas_catalog_match.phenotype.name }}</h4>
+        <h6 class="card-subtitle text-muted">Magnitude: {{ gwas_catalog_match.magnitude }} | Repute: {{ gwas_catalog_match.repute }} | P-Value: {{ gwas_catalog_match.pvalue }} | Odds Ratio: {{ gwas_catalog_match.oddsratio }}</h6>
       </div>
       <div class="card-block">
-        <p class="card-text">Keywords: {{ match.phenotype.synonyms }}</p>
-        <p class="card-text"><b>{{ match.paper.journal }}:</b> {{ match.paper.title }}
-        <a href="http://www.ncbi.nlm.nih.gov/pubmed/?term={{ match.paper.pubmed_id }}" class="card-link" style="font-size:80%">Read Paper</a></p>
+        <p class="card-text">Keywords: {{ gwas_catalog_match.phenotype.synonyms }}</p>
+        <p class="card-text"><b>{{ gwas_catalog_match.paper.journal }}:</b> {{ gwas_catalog_match.paper.title }}
+        <a href="http://www.ncbi.nlm.nih.gov/pubmed/?term={{ gwas_catalog_match.paper.pubmed_id }}" class="card-link" style="font-size:80%">Read Paper</a></p>
         {% for entry in user_genotype %}
           <div style="font-size:90%"><a href="http://www.snpedia.com/index.php/{{ entry[0] }}" class="card-link">{{ entry[0] }}</a> : {{ entry[1] }}</div><br>
         {% endfor %}

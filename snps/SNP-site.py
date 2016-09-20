@@ -3,7 +3,7 @@ import os, time, sys
 import os.path
 from settings import APP_STATIC
 import schema
-from __init__ import db_session, Base, engine
+from __init__ import db1_session, db2_session
 from schema import SNP, Phenotype, Association, Paper, File, SnpediaEvidence
 
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory
@@ -39,6 +39,8 @@ def index():
 
 @app.route('/test', methods=['GET', 'POST'])
 def test():
+    #snpedia_matches = generate_snpedia_results(top_filename, user_rsids, rsid_genotype_map)
+    sys.stdout.write("%d\n" % len(snpedia_matches))
     #entries = db_session.query(Association).all()
     #for e in entries:
     #    sys.stdout.write("%s\n" % e.source)
@@ -121,6 +123,21 @@ def parse_23andMe(filename):
 def create_important_SNPS_file(filename):
     filename = open(filename, 'w')
     # Find the rsids that correspond to the SNPs of highest magnitude (most importance) in the database
+    top_SNPs = db1_session.query(Association).filter(Association.magnitude > 3).order_by(Association.magnitude.desc()).limit(1000000)
+    for e in top_SNPs:
+        sys.stdout.write('%s\n\n' % e)
+        sys.stdout.write('%s\n\n' % e.snp)
+        sys.stdout.write('%s\n\n' % e.paper)
+        sys.stdout.write('%s\n\n' % e.phenotype)
+        filename.write(str(e.snp.rs_id) + ' ' + str(e.id) + '\n')
+
+# Creates a file containing the snp.rsid followed by the association.id (uniquely
+# identifies SNPS) per line. This function filters out the uninteresting SNPs and
+# only needs to be run once, saving time during the user's query.
+#def create_important_SNPS_file(filename):
+
+#    filename = open(filename, 'w')
+    # Find the rsids that correspond to the SNPs of highest magnitude (most importance) in the database
     #top_SNPs = db_session.query(Association).filter(Association.magnitude > 0).order_by(Association.magnitude.desc()).limit(1000000)
     
     # check that oddsratio > 0
@@ -143,12 +160,12 @@ def create_important_SNPS_file(filename):
 
 def generate_gwas_catalog_results():
     #phenotype_ids = [x for x in db_session.query(Phenotype).filter(Phenotype.synonyms.isnot(None)).all()]
-    return [x for x in db_session.query(Association).filter(Association.oddsratio > 0)]
+    return [x for x in db2_session.query(Association).filter(Association.oddsratio > 50)]
 
 # Opens the specified file generated beforehand to save searches through the
 # database. Finds the rsids that are both important and in the user file, and
 # queries the database for entries matching the user's genotype
-def generate_results(filename, user_rsids, rsid_genotype_map):
+def generate_snpedia_results(filename, user_rsids, rsid_genotype_map):
     f = open(filename)
     top_SNPs = []
     line = f.readline()
@@ -166,7 +183,7 @@ def generate_results(filename, user_rsids, rsid_genotype_map):
 
     # Build the list of matching objects from the database
     for e in query_rsids:
-        result = db_session.query(Association).filter(Association.id == rsid_id_map[e]).filter(Association.genotype == rsid_genotype_map[e])
+        result = db1_session.query(Association).filter(Association.id == rsid_id_map[e]).filter(Association.genotype == rsid_genotype_map[e])
         if result.count() != 0:
             matches.append(result.first())
     return matches
@@ -196,18 +213,19 @@ def upload():
         user_rsids, rsid_genotype_map = parse_23andMe(filename)
 
         # Choose a filename to save the most important SNPS (rsid, Association.id)
-        #top_filename = 'top_SNPs.txt'
+        top_filename = 'top_SNPs.txt'
 
-        #if (os.path.exists(top_filename) == False):
-        #    create_important_SNPS_file(top_filename)
+        if (os.path.exists(top_filename) == False):
+            create_important_SNPS_file(top_filename)
 
-#        matches = generate_results(top_filename, user_rsids, rsid_genotype_map)
-        matches = generate_gwas_catalog_results()
+        snpedia_matches = generate_snpedia_results(top_filename, user_rsids, rsid_genotype_map)
+        sys.stdout.write("%d\n" % len(snpedia_matches))
+        gwas_catalog_matches = generate_gwas_catalog_results()
 
         # find corresponding user genotypes
         user_genotypes = []
-        for match in matches:
-            sys.stdout.write("%s\n" % match.snp.rs_id)
+        for match in gwas_catalog_matches:
+            #sys.stdout.write("%s\n" % match.snp.rs_id)
             rsids = re.findall(r'rs\d+', match.snp.rs_id)
             rsid_genotype_pairs = []
             for rsid in rsids:
@@ -223,10 +241,10 @@ def upload():
                 rsid_genotype_pairs.append((rsid, genotype))
             user_genotypes.append(rsid_genotype_pairs)
 
-        sys.stdout.write('\n\n\nsanity check: %d | %d\n\n\n' % (len(matches), len(user_genotypes)))
+        sys.stdout.write('\n\n\nsanity check: %d | %d\n\n\n' % (len(gwas_catalog_matches), len(user_genotypes)))
         # Save a copy of the dynamically-generated html for later use (if user wants
         # to navigate the website and come back to it later)
-        generated_report = render_template('report.html', matches=matches, user_genotypes=user_genotypes, n=len(matches))
+        generated_report = render_template('report.html', snpedia_matches=snpedia_matches, gwas_catalog_matches=gwas_catalog_matches, user_genotypes=user_genotypes, n=len(gwas_catalog_matches))
         BASE_DIR = os.path.dirname(os.path.abspath(__file__))
         new_filename = os.path.join(BASE_DIR, 'templates/reports/' + str(current_user.id) + '.html')
         with open(new_filename, 'w+') as f:
@@ -238,9 +256,11 @@ def upload():
 
 @app.teardown_appcontext
 def shutdown_session(exception=None):
-    db_session.remove()
+    db1_session.remove()
+    db2_session.remove()
 
 if __name__ == '__main__':
     app.run(
+        #host='0.0.0.0',
         debug=True
     )
