@@ -4,6 +4,7 @@ import os.path
 from settings import APP_STATIC
 import schema
 from __init__ import db1_session, db2_session
+
 from schema import SNP, Phenotype, Association, Paper, File, SnpediaEvidence
 
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory
@@ -21,6 +22,9 @@ from flask.ext.login import current_user
 
 from sqlalchemy import *
 
+import database
+
+from database import auto_matches, make_snpedia_entry, make_gwas_catalog_entry, make_auto_entry
 import re
 
 
@@ -39,16 +43,33 @@ def index():
 
 @app.route('/test', methods=['GET', 'POST'])
 def test():
+    rsids = [x.rs_id for x in db1_session.query(SNP).all()]
+    for e in rsids:
+        sys.stdout.write("%s\n" % type(e))
+    '''
+    rsids = [x.rs_id for x in db2_session.query(SNP).all()]
+    sys.stdout.write("here........%d\n" % len(rsids))
+    rsid_map = {}
     #snpedia_matches = generate_snpedia_results(top_filename, user_rsids, rsid_genotype_map)
-    sys.stdout.write("%d\n" % len(snpedia_matches))
+    for match in auto_matches:
+        if match.rsid not in rsid_map:
+            # create new entry
+            rsid_map[match.rsid] = []
+        temp = rsid_map[match.rsid]
+        temp.append(match)
+        rsid_map[match.rsid] = temp
+
+    for rsid in rsid_map:
+        entries = rsid_map[rsid]
+        for entry in entries:
+            sys.stdout.write("%s\n" % entry.rsid)
     #entries = db_session.query(Association).all()
     #for e in entries:
     #    sys.stdout.write("%s\n" % e.source)
         #sys.stdout.write("%s\n" % e.misc)
         #sys.stdout.write("%s\n" % e.equivalents)
-
-
-    return render_template('reports/1.html')
+    '''
+    return render_template('upload.html')
     #return send_from_directory('uploads', '1.txt')
 
 # for testing purposes only
@@ -123,7 +144,7 @@ def parse_23andMe(filename):
 def create_important_SNPS_file(filename):
     filename = open(filename, 'w')
     # Find the rsids that correspond to the SNPs of highest magnitude (most importance) in the database
-    top_SNPs = db1_session.query(Association).filter(Association.magnitude > 3).order_by(Association.magnitude.desc()).limit(1000000)
+    top_SNPs = db1_session.query(Association).filter(Association.magnitude > 3).order_by(Association.magnitude.desc()).limit(1000)
     for e in top_SNPs:
         sys.stdout.write('%s\n\n' % e)
         sys.stdout.write('%s\n\n' % e.snp)
@@ -158,9 +179,33 @@ def create_important_SNPS_file(filename):
     #    if rsid.isdigit():
     #    filename.write(str(e.snp.rs_id) + ' ' + str(e.id) + '\n')
 
-def generate_gwas_catalog_results():
+def generate_gwas_catalog_results(user_rsids):
     #phenotype_ids = [x for x in db_session.query(Phenotype).filter(Phenotype.synonyms.isnot(None)).all()]
-    return [x for x in db2_session.query(Association).filter(Association.oddsratio > 50)]
+    results = [x for x in db2_session.query(SNP).all()]
+    updated = []
+    # map each rsid to the snp id
+    mymap = {}
+    for e in results:
+        line = e.rs_id
+        rsids = re.findall(r'rs\d+', line, flags=re.IGNORECASE)
+        for rsid in rsids:
+            #sys.stdout.write("%s\n" % rsid[2:])
+            updated.append(int(rsid[2:]))
+            mymap[int(rsid[2:])] = e.id
+    query_rsids = set(updated).intersection(user_rsids)
+    sys.stdout.write("here2222........%d\n" % len(query_rsids))
+
+    matches = []
+    i = 0
+    for query in query_rsids:
+        if i > 10:
+            return matches
+        # change criteria later
+        var = db2_session.query(Association).filter(Association.snp_id == mymap[query]).first()
+        #for entry in var:
+        matches.append(var)
+        i = i + 1
+    return matches
 
 # Opens the specified file generated beforehand to save searches through the
 # database. Finds the rsids that are both important and in the user file, and
@@ -191,9 +236,11 @@ def generate_snpedia_results(filename, user_rsids, rsid_genotype_map):
 # Route that will process the file upload
 @app.route('/upload', methods=['POST'])
 def upload():
+    # A map containing important entries associated with rsids
+    rsid_map = {}
     # Remove existing report
-    if os.path.exists('templates/new_report.html'):
-        os.remove('templates/new_report.html')
+    if os.path.exists('templates/reports/1.html'):
+        os.remove('templates/reports/1.html')
     # Get the name of the uploaded file
     file = request.files['file']
     # Check if the file is one of the allowed types/extensions
@@ -204,11 +251,6 @@ def upload():
         # Move the file form the temporal folder to
         # the upload folder we setup
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        
-        # Save filename in database
-        #user_manager =  current_app.user_manager
-        #db_adapter = user_manager.db_adapter
-        #db_adapter.update_object(db_adapter.UserClass, snp_file=filename)
 
         user_rsids, rsid_genotype_map = parse_23andMe(filename)
 
@@ -217,16 +259,46 @@ def upload():
 
         if (os.path.exists(top_filename) == False):
             create_important_SNPS_file(top_filename)
-
+        '''
         snpedia_matches = generate_snpedia_results(top_filename, user_rsids, rsid_genotype_map)
-        sys.stdout.write("%d\n" % len(snpedia_matches))
-        gwas_catalog_matches = generate_gwas_catalog_results()
+        for match in snpedia_matches:
+            if match.snp.rs_id not in rsid_map:
+                # create new entry
+                rsid_map[match.snp.rs_id] = []
+            temp = rsid_map[match.snp.rs_id]
+            temp.append(make_snpedia_entry(match))
+            rsid_map[match.snp.rs_id] = temp
+        '''
 
+        gwas_catalog_matches = generate_gwas_catalog_results(user_rsids)
+        #sys.stdout.write("%d\n" % len(gwas_catalog_matches))
+        for match in gwas_catalog_matches:
+            sys.stdout.write("%s\n" % match.paper)
+            # there may be multiple rsids associated with a single gwas catalog entry
+            rsids = re.findall(r'rs\d+', match.snp.rs_id, flags=re.IGNORECASE)
+            for rsid in rsids:
+                rsid = rsid[2:] # filter initial 'rs', leaving just the number
+                if rsid not in rsid_map:
+                    # create new entry
+                    rsid_map[rsid] = []
+                temp = rsid_map[rsid]
+                temp.append(make_gwas_catalog_entry(match, rsids))
+                rsid_map[rsid] = temp
+        '''
+        for match in auto_matches:
+            if match.rsid not in rsid_map:
+                # create new entry
+                rsid_map[match.rsid] = []
+            temp = rsid_map[match.rsid]
+            temp.append(match)
+            rsid_map[match.rsid] = temp
+        '''
+        '''
         # find corresponding user genotypes
         user_genotypes = []
         for match in gwas_catalog_matches:
             #sys.stdout.write("%s\n" % match.snp.rs_id)
-            rsids = re.findall(r'rs\d+', match.snp.rs_id)
+            rsids = re.findall(r'rs\d+', match.snp.rs_id, flags=re.IGNORECASE)
             rsid_genotype_pairs = []
             for rsid in rsids:
                 # check that rsid is of the format rs#
@@ -240,17 +312,24 @@ def upload():
                     genotype = 'None'
                 rsid_genotype_pairs.append((rsid, genotype))
             user_genotypes.append(rsid_genotype_pairs)
-
+        
         sys.stdout.write('\n\n\nsanity check: %d | %d\n\n\n' % (len(gwas_catalog_matches), len(user_genotypes)))
+        '''
+        #for rsid in rsid_map:
+        #    sys.stdout.write("%s\n" % rsid)
+        #    sys.stdout.write("%d\n" % len(rsid_map[rsid]))
+
         # Save a copy of the dynamically-generated html for later use (if user wants
         # to navigate the website and come back to it later)
-        generated_report = render_template('report.html', snpedia_matches=snpedia_matches, gwas_catalog_matches=gwas_catalog_matches, user_genotypes=user_genotypes, n=len(gwas_catalog_matches))
-        BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-        new_filename = os.path.join(BASE_DIR, 'templates/reports/' + str(current_user.id) + '.html')
-        with open(new_filename, 'w+') as f:
-            f.write(generated_report)
-        return render_template('reports/' + str(current_user.id) + '.html')
+        #generated_report = render_template('report.html', rsid_genotype_map=rsid_genotype_map, snpedia_matches=snpedia_matches, gwas_catalog_matches=gwas_catalog_matches, user_genotypes=user_genotypes, n=len(gwas_catalog_matches), auto_matches=auto_matches)
+        generated_report = render_template('report.html', rsid_genotype_map=rsid_genotype_map, rsid_map=rsid_map)
 
+        #BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+        #new_filename = os.path.join(BASE_DIR, 'templates/reports/' + str(current_user.id) + '.html')
+        #with open(new_filename, 'w+') as f:
+        #    f.write(generated_report)
+        #return render_template('reports/' + str(current_user.id) + '.html')
+        return generated_report
     else:
         return render_template('retry.html')
 

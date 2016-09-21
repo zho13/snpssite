@@ -30,24 +30,15 @@ body {
 	border-color: #CDCBC9;
 }
 p {
-	padding-top: 10px;
+	padding-top: 0px;
 	padding-left: 15px;
 	padding-right: 15px;
-	padding-bottom: 10px;
+	padding-bottom: 0px;
 }
 .rsid {
 	text-align: right;
 }
-.scroll-table {
-	margin-right: 20px;
-	height: 650px !important;
-	overflow: auto;
-}
-.content-scroll {
-	margin-right: 20px;
-	height: 670px !important;
-	overflow: auto;
-}
+
 .image {
 	/* http://www.pageresource.com/wallpapers/68049/abstract-blue-and-green-with-dark-background-hd-wallpaper.html */
 	background-image: url("jumbo_image.jpg");
