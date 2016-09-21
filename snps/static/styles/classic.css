@@ -7,42 +7,17 @@
 body {
 	padding-top: 50px;
 }
-.welcome {
-	padding: 40px 15px;
-	text-align: center;
-}
-.about {
-	margin-top: 50px;
-}
-.info {
-	margin-right: 20px;
-	margin-bottom: 15px;
-	border-style: solid;
-	border-radius: 15px;
-}
-.up {
-	border-color: #BADAAA;
-}
-.down {
-	border-color: #EC9CAA;
-}
-.flat {
-	border-color: #CDCBC9;
-}
 p {
 	padding-top: 0px;
 	padding-left: 15px;
 	padding-right: 15px;
 	padding-bottom: 0px;
 }
+h5 {
+	font-family: 'Merriweather', 'Helvetica Neue', Arial, sans-serif;
+}
 .rsid {
 	text-align: right;
-}
-
-.image {
-	/* http://www.pageresource.com/wallpapers/68049/abstract-blue-and-green-with-dark-background-hd-wallpaper.html */
-	background-image: url("jumbo_image.jpg");
-	color: white;
 }
 .results tr[visible='false'],
 .no-result {
@@ -62,14 +37,6 @@ p {
     margin: auto;
     padding-top: 20px;
     padding-left: 45px;
-}
-.close-btn {
-	margin-right: 10px;
-	margin-top: 5px;
-}
-.info-header {
-	margin-top: 0px;
-	margin-bottom: 10px;
 }
 /* Cards */
 .card {
@@ -96,6 +63,14 @@ p {
 	font-family: 'Merriweather', 'Helvetica Neue', Arial, sans-serif;
 	font-size: 150%;
 	margin-bottom:.75rem
+}
+.card-criteria {
+	font-weight: bold;
+	font-family: 'Merriweather', 'Helvetica Neue', Arial, sans-serif;
+	margin-bottom:0;
+	height:30px;
+	line-height:30px;
+	text-align: right
 }
 .card-subtitle {
 	font-weight: bold;

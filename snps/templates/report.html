@@ -12,36 +12,59 @@
   <aside>
   {% for rsid in rsid_map %}
 
-      <div class="card">
-        <div class="card-block">
-          <h4 class="card-title"><a href="http://www.snpedia.com/index.php/rs{{ rsid }}">rs{{ rsid }}</a></h4>
-          {% set genotype = rsid_genotype_map[rsid] %}
-          <h6 class="card-subtitle">Your Genotype: {{ genotype }}</h6>
-        </div>
-        {% for entry in rsid_map[rsid] %}
-        <div class="card-block" style="font-size:85%">
-          <p class="card-text text-muted" style="text-align:right"><b>{{ entry.source }}</b></p>
-          {% if entry.source == 'snpedia' %}
-          <p>{{ entry.description }}<div class="card-subtitle" style="padding-left:15px">Magnitude: {{ entry.magnitude }} | Repute: {{ entry.repute }}</div></p>
-          {% elif entry.source == 'gwas_catalog' %}
-          <p><b>{{ entry.journal }}</b> {{ entry.title }} <a href="http://www.ncbi.nlm.nih.gov/pubmed/?term={{ entry.pmid }}" class="card-link" style="font-size:80%">Read Paper</a>
-          <div class="card-subtitle" style="padding-left:15px">P-Value: {{ entry.pvalue }} | Odds Ratio: {{ entry.oddsratio }}</div></p>
-          <span class="label label-default">{{ entry.name }}</span>
-          {% for keyword in entry.synonyms %}
-            <span class="label label-default">{{ keyword }}</span>
-          {% endfor %}
-          {% elif entry.source == 'auto' %}
-          <p><div class="card-subtitle" style="padding-left:15px">P-Value: {{ entry.pvalue }}</div></p>
-          <p class="card-text"><a href="http://www.ncbi.nlm.nih.gov/pubmed/?term={{ entry.pmid }}" class="card-link" style="font-size:80%">Read Paper</a></p>
-          <span class="label label-default">{{ entry.detailed_phenotype }}</span>
-          {% for keyword in entry.simple_phenotype %}
-            <span class="label label-default">{{ keyword }}</span>
-          {% endfor %}
+  <div class="card">
+    <div class="card-block">
+      <h4 class="card-title"><a href="http://www.snpedia.com/index.php/rs{{ rsid }}">rs{{ rsid }}</a></h4>
+      {% set genotype = rsid_genotype_map[rsid] %}
+      <h6 class="card-subtitle">Your Genotype: {{ genotype }}</h6>
+    </div>
+    {% for entry in rsid_map[rsid] %}
+    <div class="card-block" style="font-size:85%">
+      {% if entry.source == 'snpedia' %}
+      
+      <div class="col-lg-12" style="bottom:0"><p class="col-lg-3 card-text text-muted" style="text-align:right; background-color:blue"><b>{{ entry.source }}</b></p></div>
+      <p>{{ entry.description }}<div class="card-subtitle" style="padding-left:15px">Magnitude: {{ entry.magnitude }} | Repute: {{ entry.repute }}</div></p>
 
-          {% endif %}
-        </div>
-      {% endfor %}
+      {% elif entry.source == 'gwas_catalog' %}
+
+      <div class="row">
+        <p class="col-lg-4 card-text text-muted" style="height:30px; line-height:30px">
+          <b>{{ entry.source }}</b>
+        </p>
+        <div class="col-lg-8 card-criteria">P-Value: {{ entry.pvalue }} | Odds Ratio: {{ entry.oddsratio }}</div>
       </div>
+
+        <p>
+          <b>{{ entry.journal }} </b>
+          {{ entry.title }}
+          <a href="http://www.ncbi.nlm.nih.gov/pubmed/?term={{ entry.pmid }}" class="card-link" style="font-size:80%"> PubMed ID: {{ entry.pmid }}</a>
+        </p>
+        <div style="margin:15px">
+          <h5><span class="label label-default">{{ entry.name }}</span>
+          {% for keyword in entry.synonyms %}
+          <span class="label label-default">{{ keyword }}</span>
+          {% endfor %}</h5>
+        </div>
+
+      {% elif entry.source == 'auto' %}
+
+      <div class="row">
+        <p class="col-lg-4 card-text text-muted" style="height:30px; line-height:30px">
+          <b>{{ entry.source }}   </b><span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+        </p>
+        <div class="col-lg-8 card-criteria">P-Value: {{ entry.pvalue }}</div>
+      </div>
+      <p class="card-text"><a href="http://www.ncbi.nlm.nih.gov/pubmed/?term={{ entry.pmid }}" class="card-link" style="font-size:80%">PubMed ID: {{ entry.pmid }}</a></p>
+      <div style="margin:15px">
+      <h5><span class="label label-default">{{ entry.detailed_phenotype }}</span>
+      {% for keyword in entry.simple_phenotype %}
+        <span class="label label-default">{{ keyword }}</span>
+      {% endfor %}</h5>
+      </div>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
   {% endfor %}
   </aside>
 
