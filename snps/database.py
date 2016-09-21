@@ -1,4 +1,5 @@
 from schema import SNP, Phenotype, Association, Paper, File, SnpediaEvidence
+import re
 
 class SnpediaEntry(object):
     # snpedia database
@@ -45,7 +46,10 @@ class GwasCatalogEntry(object):
         self.rsid_list = rsid_list
 
 def make_gwas_catalog_entry(db_object, rsid_list):
-    entry = GwasCatalogEntry(db_object.pvalue, db_object.oddsratio, db_object.phenotype.synonyms, db_object.phenotype.name, db_object.paper.pubmed_id, db_object.paper.title, db_object.paper.journal, rsid_list)
+    keywords = []
+    if db_object.phenotype.synonyms is not None:
+        keywords = re.split(r'\|+', db_object.phenotype.synonyms)
+    entry = GwasCatalogEntry(db_object.pvalue, db_object.oddsratio, keywords, db_object.phenotype.name, db_object.paper.pubmed_id, db_object.paper.title, db_object.paper.journal, rsid_list)
     return entry
 
 # for Volodymyr's automatically-curated database
@@ -66,9 +70,10 @@ class AutoEntry(object):
 		self.pvalue = pvalue
 
 def make_auto_entry(line):
-	tokens = line.split()
-	entry = AutoEntry(tokens[0], (tokens[1])[2:], tokens[2], tokens[3], tokens[4])
-	return entry
+    tokens = re.split(r'\t+', line.decode('utf-8'))
+    keywords = re.split(r'\|+', tokens[2])
+    entry = AutoEntry(tokens[0], (tokens[1])[2:], keywords, tokens[3], tokens[4])
+    return entry
 
 
 # data structure for automatically-curated database

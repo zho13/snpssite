@@ -26,13 +26,18 @@
           {% elif entry.source == 'gwas_catalog' %}
           <p><b>{{ entry.journal }}</b> {{ entry.title }} <a href="http://www.ncbi.nlm.nih.gov/pubmed/?term={{ entry.pmid }}" class="card-link" style="font-size:80%">Read Paper</a>
           <div class="card-subtitle" style="padding-left:15px">P-Value: {{ entry.pvalue }} | Odds Ratio: {{ entry.oddsratio }}</div></p>
-          <p class="card-text">{{ entry.name }} | {{ entry.synonyms }}</p>
+          <span class="label label-default">{{ entry.name }}</span>
+          {% for keyword in entry.synonyms %}
+            <span class="label label-default">{{ keyword }}</span>
+          {% endfor %}
           {% elif entry.source == 'auto' %}
-          <p class="card-text">{{ entry.pmid }}</p>
-          <p class="card-text">{{ entry.rsid }}</p>
-          <p class="card-text">{{ entry.simple_phenotype }}</p>
-          <p class="card-text">{{ entry.detailed_phenotype }}</p>
-          <p class="card-text">{{ entry.pvalue }}</p>
+          <p><div class="card-subtitle" style="padding-left:15px">P-Value: {{ entry.pvalue }}</div></p>
+          <p class="card-text"><a href="http://www.ncbi.nlm.nih.gov/pubmed/?term={{ entry.pmid }}" class="card-link" style="font-size:80%">Read Paper</a></p>
+          <span class="label label-default">{{ entry.detailed_phenotype }}</span>
+          {% for keyword in entry.simple_phenotype %}
+            <span class="label label-default">{{ keyword }}</span>
+          {% endfor %}
+
           {% endif %}
         </div>
       {% endfor %}

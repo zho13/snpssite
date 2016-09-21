@@ -43,9 +43,14 @@ def index():
 
 @app.route('/test', methods=['GET', 'POST'])
 def test():
-    rsids = [x.rs_id for x in db1_session.query(SNP).all()]
-    for e in rsids:
-        sys.stdout.write("%s\n" % type(e))
+    f = open('/Users/zandraho/Desktop/CURIS-copy/snps/tmp/auto.tsv')
+    line = f.readline()
+    while (line != ""):
+        tokens = re.split(r'\t+', line.decode('utf-8'))
+        keywords = re.split(r'\|+', line.decode('utf-8'))
+        sys.stdout.write("%s\n" % type(keywords))
+        line = f.readline()
+
     '''
     rsids = [x.rs_id for x in db2_session.query(SNP).all()]
     sys.stdout.write("here........%d\n" % len(rsids))
@@ -146,10 +151,6 @@ def create_important_SNPS_file(filename):
     # Find the rsids that correspond to the SNPs of highest magnitude (most importance) in the database
     top_SNPs = db1_session.query(Association).filter(Association.magnitude > 3).order_by(Association.magnitude.desc()).limit(1000)
     for e in top_SNPs:
-        sys.stdout.write('%s\n\n' % e)
-        sys.stdout.write('%s\n\n' % e.snp)
-        sys.stdout.write('%s\n\n' % e.paper)
-        sys.stdout.write('%s\n\n' % e.phenotype)
         filename.write(str(e.snp.rs_id) + ' ' + str(e.id) + '\n')
 
 # Creates a file containing the snp.rsid followed by the association.id (uniquely
@@ -198,7 +199,7 @@ def generate_gwas_catalog_results(user_rsids):
     matches = []
     i = 0
     for query in query_rsids:
-        if i > 10:
+        if i > 1000:
             return matches
         # change criteria later
         var = db2_session.query(Association).filter(Association.snp_id == mymap[query]).first()
@@ -259,7 +260,7 @@ def upload():
 
         if (os.path.exists(top_filename) == False):
             create_important_SNPS_file(top_filename)
-        '''
+        
         snpedia_matches = generate_snpedia_results(top_filename, user_rsids, rsid_genotype_map)
         for match in snpedia_matches:
             if match.snp.rs_id not in rsid_map:
@@ -268,7 +269,7 @@ def upload():
             temp = rsid_map[match.snp.rs_id]
             temp.append(make_snpedia_entry(match))
             rsid_map[match.snp.rs_id] = temp
-        '''
+        
 
         gwas_catalog_matches = generate_gwas_catalog_results(user_rsids)
         #sys.stdout.write("%d\n" % len(gwas_catalog_matches))
@@ -284,7 +285,7 @@ def upload():
                 temp = rsid_map[rsid]
                 temp.append(make_gwas_catalog_entry(match, rsids))
                 rsid_map[rsid] = temp
-        '''
+        
         for match in auto_matches:
             if match.rsid not in rsid_map:
                 # create new entry
@@ -292,7 +293,7 @@ def upload():
             temp = rsid_map[match.rsid]
             temp.append(match)
             rsid_map[match.rsid] = temp
-        '''
+        
         '''
         # find corresponding user genotypes
         user_genotypes = []
@@ -315,9 +316,12 @@ def upload():
         
         sys.stdout.write('\n\n\nsanity check: %d | %d\n\n\n' % (len(gwas_catalog_matches), len(user_genotypes)))
         '''
-        #for rsid in rsid_map:
-        #    sys.stdout.write("%s\n" % rsid)
-        #    sys.stdout.write("%d\n" % len(rsid_map[rsid]))
+        sys.stdout.write("before: %d\n" % len(rsid_map))
+        rsids = [rsid for rsid in rsid_map]
+        for rsid in rsids:
+            if len(rsid_map[rsid]) < 2:
+                del rsid_map[rsid]
+        sys.stdout.write("after: %d\n" % len(rsid_map))
 
         # Save a copy of the dynamically-generated html for later use (if user wants
         # to navigate the website and come back to it later)
