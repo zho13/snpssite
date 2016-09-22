@@ -10,6 +10,7 @@
     </div>
   </div>
   <aside>
+
   {% for rsid in rsid_map %}
 
   <div class="card">
@@ -20,47 +21,76 @@
     </div>
     {% for entry in rsid_map[rsid] %}
     <div class="card-block" style="font-size:85%">
+
       {% if entry.source == 'snpedia' %}
       
-      <div class="col-lg-12" style="bottom:0"><p class="col-lg-3 card-text text-muted" style="text-align:right; background-color:blue"><b>{{ entry.source }}</b></p></div>
-      <p>{{ entry.description }}<div class="card-subtitle" style="padding-left:15px">Magnitude: {{ entry.magnitude }} | Repute: {{ entry.repute }}</div></p>
+      <div class="row">
+        <div class="col-lg-9 card-body">
+          <h4>Phenotype description: {{ entry.description }}</h4>
+        </div>
+        <div class="col-lg-3 card-body text-muted" style="text-align:right">
+          <b>Snpedia</b>
+        </div>
+      </div>
+      <div class="card-body" style="padding-left:15px">
+        {% if entry.magnitude %}
+          Magnitude: {{ entry.magnitude }}
+        {% endif %}
+        {% if entry.magnitude and entry.reupte %} | {% endif %}
+        {% if entry.repute %}
+          Repute: {{ entry.repute }}
+        {% endif %}
+      </div>
 
       {% elif entry.source == 'gwas_catalog' %}
 
       <div class="row">
-        <p class="col-lg-4 card-text text-muted" style="height:30px; line-height:30px">
-          <b>{{ entry.source }}</b>
-        </p>
-        <div class="col-lg-8 card-criteria">P-Value: {{ entry.pvalue }} | Odds Ratio: {{ entry.oddsratio }}</div>
+        <div class="col-lg-9 card-body">
+          <h4>Phenotype name: {{ entry.name }}</h4>
+          {% if entry.synonyms %}
+            <br>Synonyms: 
+            {% for keyword in entry.synonyms %}
+            <span class="label label-default" style="display:inline-block; margin-bottom: 5px">{{ keyword }}</span>
+            {% endfor %}
+          {% endif %}
+        </div>
+        <div class="col-lg-3 card-body text-muted" style="text-align:right">
+          <b>Gwas Catalog</b>
+        </div>
       </div>
 
-        <p>
-          <b>{{ entry.journal }} </b>
-          {{ entry.title }}
-          <a href="http://www.ncbi.nlm.nih.gov/pubmed/?term={{ entry.pmid }}" class="card-link" style="font-size:80%"> PubMed ID: {{ entry.pmid }}</a>
-        </p>
-        <div style="margin:15px">
-          <h5><span class="label label-default">{{ entry.name }}</span>
-          {% for keyword in entry.synonyms %}
-          <span class="label label-default">{{ keyword }}</span>
-          {% endfor %}</h5>
-        </div>
+      <div class="card-body" style="margin-top:0">Selection Criteria: 
+        {% if entry.pvalue %}P-Value: {{ entry.pvalue }}{% endif %}
+        {% if entry.pvalue and entry.oddsratio %} | {% endif %}
+        {% if entry.oddsratio %}Odds Ratio: {{ entry.oddsratio }}{% endif %}
+      </div>
+      <div class="card-body" style="margin-bottom:0">Source: {{ entry.title }} ({{ entry.journal }})</div><div style="padding-right: 15px; text-align:right"><span class="glyphicon glyphicon-book" aria-hidden="true"></span>
+        <a href="http://www.ncbi.nlm.nih.gov/pubmed/?term={{ entry.pmid }}" class="card-link" style="font-size: 80%"> PubMed ID: {{ entry.pmid }}</a></div>
 
       {% elif entry.source == 'auto' %}
 
       <div class="row">
-        <p class="col-lg-4 card-text text-muted" style="height:30px; line-height:30px">
-          <b>{{ entry.source }}   </b><span class="glyphicon glyphicon-star" aria-hidden="true"></span>
-        </p>
-        <div class="col-lg-8 card-criteria">P-Value: {{ entry.pvalue }}</div>
+        <div class="col-lg-9 card-body">
+          {% if entry.simple_phenotype %}
+            <h4>Related Keywords: 
+            {% for keyword in entry.simple_phenotype %}
+            <span class="label label-primary" style="display:inline-block; margin-bottom: 5px">{{ keyword }}</span>
+            {% endfor %}</h4>
+          {% endif %}
+          {% if entry.detailed_phenotype %}
+            Detailed Phenotype: <span class="label label-default" style="display:inline-block; margin-bottom: 5px">{{ entry.detailed_phenotype }}</span><br>
+          {% endif %}
+        </div>
+        <div class="col-lg-3 card-body text-muted" style="text-align:right">
+          <b>Auto   </b><span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+        </div>
       </div>
-      <p class="card-text"><a href="http://www.ncbi.nlm.nih.gov/pubmed/?term={{ entry.pmid }}" class="card-link" style="font-size:80%">PubMed ID: {{ entry.pmid }}</a></p>
-      <div style="margin:15px">
-      <h5><span class="label label-default">{{ entry.detailed_phenotype }}</span>
-      {% for keyword in entry.simple_phenotype %}
-        <span class="label label-default">{{ keyword }}</span>
-      {% endfor %}</h5>
-      </div>
+        <div class="card-body" style="margin-top:0">
+          P-Value: {{ entry.pvalue }}
+        </div>
+        <div class="card-body" style="margin-bottom:0">Source: Fill in entry.title (entry.journal)</div><div style="padding-right: 15px; text-align:right"><span class="glyphicon glyphicon-book" aria-hidden="true"></span>
+          <a href="http://www.ncbi.nlm.nih.gov/pubmed/?term={{ entry.pmid }}" class="card-link" style="font-size: 80%"> PubMed ID: {{ entry.pmid }}</a>
+        </div>
       {% endif %}
     </div>
     {% endfor %}

@@ -72,6 +72,8 @@ class AutoEntry(object):
 def make_auto_entry(line):
     tokens = re.split(r'\t+', line.decode('utf-8'))
     keywords = re.split(r'\|+', tokens[2])
+    if (tokens[3] == '-'):
+        tokens[3] = None
     entry = AutoEntry(tokens[0], (tokens[1])[2:], keywords, tokens[3], tokens[4])
     return entry
 

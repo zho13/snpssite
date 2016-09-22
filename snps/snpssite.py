@@ -40,6 +40,9 @@ def index():
 
 @app.route('/test', methods=['GET', 'POST'])
 def test():
+    top_SNPs = db1_session.query(Association).filter(Association.magnitude > 3).order_by(Association.magnitude.desc()).limit(10)
+    for e in top_SNPs:
+        sys.stdout.write("%s\n" % type(e.snp.rs_id))
     return render_template('reports/1.html')
     #return send_from_directory('uploads', '1.txt')
 

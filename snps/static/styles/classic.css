@@ -1,11 +1,22 @@
-.card-link a {
-	font-size: 25% !important;
-}
 .navbar a {
     color: black !important;
 }
 body {
 	padding-top: 50px;
+}
+.card-body {
+	font-family: 'Merriweather', 'Helvetica Neue', Arial, sans-serif;
+	padding-top: 0px;
+	padding-left: 15px;
+	padding-right: 15px;
+	padding-bottom: 0px;
+
+	display: block;
+    font-size: 1.1em;
+    margin-top: 1.67em;
+    margin-bottom: 1.67em;
+    margin-left: 0;
+    margin-right: 0;
 }
 p {
 	padding-top: 0px;
@@ -13,8 +24,15 @@ p {
 	padding-right: 15px;
 	padding-bottom: 0px;
 }
-h5 {
-	font-family: 'Merriweather', 'Helvetica Neue', Arial, sans-serif;
+.test {
+	font-size: 1.3em;
+}
+h4 {
+	display: block;
+    font-family: 'Merriweather', 'Helvetica Neue', Arial, sans-serif;
+	font-size: 1.3em;
+	margin-left: 0;
+    margin-right: 0;
 }
 .rsid {
 	text-align: right;
