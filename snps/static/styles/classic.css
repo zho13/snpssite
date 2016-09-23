@@ -1,22 +1,67 @@
+.custom-body {
+	font-size: 85%
+}
+.custom-header {
+	font-size: 1.1em;
+	padding-left: 1.25em;
+    padding-right: 1.25em;
+    padding-top: .25em;
+    padding-bottom: .5em;
+	font-family: 'Merriweather', 'Helvetica Neue', Arial, sans-serif;
+}
+.custom-source {
+	display: table-cell;
+	width:25%;
+	text-align:right
+}
+.custom-description {
+	display: table-cell;
+	width:75%
+}
+.custom-big-label {
+	background-color:white;
+	color:#808080;
+	border:1px solid #808080;
+	display:inline-block;
+	margin-bottom: 0;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+.custom-small-label {
+	background-color:white;
+	color:#808080;
+	border:1px solid #808080;
+	display:inline-block;
+	margin-bottom: 0;
+	padding-top: 3px;
+	padding-bottom: 3px
+}
 .navbar a {
     color: black !important;
 }
 body {
 	padding-top: 50px;
 }
-.card-body {
-	font-family: 'Merriweather', 'Helvetica Neue', Arial, sans-serif;
-	padding-top: 0px;
-	padding-left: 15px;
-	padding-right: 15px;
-	padding-bottom: 0px;
-
+.custom-text {
 	display: block;
+	font-family: 'Merriweather', 'Helvetica Neue', Arial, sans-serif;
     font-size: 1.1em;
-    margin-top: 1.67em;
-    margin-bottom: 1.67em;
-    margin-left: 0;
-    margin-right: 0;
+    padding-left: 2.5em;
+    padding-right: 2.5em;
+    padding-top: .5em;
+    padding-bottom: .5em;
+}
+.custom-subheader {
+	display: block;
+	font-family: 'Merriweather', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 1.1em;
+	padding-left: 1.25em;
+	padding-right: 1.25em;
+	padding-top: 1em;
+	padding-bottom: 1em;
+	width:100%;
+	display:table;
+	vertical-align:middle
 }
 p {
 	padding-top: 0px;
@@ -58,6 +103,8 @@ h4 {
 }
 /* Cards */
 .card {
+	padding-top: .5em;
+	padding-bottom: .5em;
 	position:relative;
 	display:block;
 	margin:auto;

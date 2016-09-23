@@ -14,25 +14,27 @@
   {% for rsid in rsid_map %}
 
   <div class="card">
-    <div class="card-block">
+    <div class="custom-header">
       <h4 class="card-title"><a href="http://www.snpedia.com/index.php/rs{{ rsid }}">rs{{ rsid }}</a></h4>
       {% set genotype = rsid_genotype_map[rsid] %}
       <h6 class="card-subtitle">Your Genotype: {{ genotype }}</h6>
     </div>
     {% for entry in rsid_map[rsid] %}
-    <div class="card-block" style="font-size:85%">
+    <div class="custom-body">
 
       {% if entry.source == 'snpedia' %}
       
-      <div class="row">
-        <div class="col-lg-9 card-body">
-          <h4>Phenotype description: {{ entry.description }}</h4>
+      <div class="custom-subheader">
+        <div class="custom-description">
+          {% if entry.description %}
+            <h4>Phenotype: <span class="label custom-big-label">{{ entry.description }}</span></h4>
+          {% endif %}
         </div>
-        <div class="col-lg-3 card-body text-muted" style="text-align:right">
+        <div class="text-muted custom-source">
           <b>Snpedia</b>
         </div>
       </div>
-      <div class="card-body" style="padding-left:15px">
+      <div class="custom-text">
         {% if entry.magnitude %}
           Magnitude: {{ entry.magnitude }}
         {% endif %}
@@ -44,52 +46,54 @@
 
       {% elif entry.source == 'gwas_catalog' %}
 
-      <div class="row">
-        <div class="col-lg-9 card-body">
-          <h4>Phenotype name: {{ entry.name }}</h4>
+      <div class="custom-subheader">
+        <div class="custom-description">
+          {% if entry.name %}
+          <h4>Phenotype: <span class="label custom-big-label">{{ entry.name }}</span></h4>
+          {% endif %}
           {% if entry.synonyms %}
             <br>Synonyms: 
             {% for keyword in entry.synonyms %}
-            <span class="label label-default" style="display:inline-block; margin-bottom: 5px">{{ keyword }}</span>
+            <span class="label custom-big-label">{{ keyword }}</span>
             {% endfor %}
           {% endif %}
         </div>
-        <div class="col-lg-3 card-body text-muted" style="text-align:right">
+        <div class="text-muted custom-source">
           <b>Gwas Catalog</b>
         </div>
       </div>
 
-      <div class="card-body" style="margin-top:0">Selection Criteria: 
+      <div class="custom-text">
         {% if entry.pvalue %}P-Value: {{ entry.pvalue }}{% endif %}
         {% if entry.pvalue and entry.oddsratio %} | {% endif %}
         {% if entry.oddsratio %}Odds Ratio: {{ entry.oddsratio }}{% endif %}
       </div>
-      <div class="card-body" style="margin-bottom:0">Source: {{ entry.title }} ({{ entry.journal }})</div><div style="padding-right: 15px; text-align:right"><span class="glyphicon glyphicon-book" aria-hidden="true"></span>
-        <a href="http://www.ncbi.nlm.nih.gov/pubmed/?term={{ entry.pmid }}" class="card-link" style="font-size: 80%"> PubMed ID: {{ entry.pmid }}</a></div>
+      <div class="custom-text">Source: {{ entry.title }} ({{ entry.journal }})   <span class="glyphicon glyphicon-book" aria-hidden="true"></span>
+        <a href="http://www.ncbi.nlm.nih.gov/pubmed/?term={{ entry.pmid }}" class="card-link" style="font-size: 80%; white-space:nowrap"> PubMed ID: {{ entry.pmid }}</a></div>
 
       {% elif entry.source == 'auto' %}
 
-      <div class="row">
-        <div class="col-lg-9 card-body">
+      <div class="custom-subheader">
+        <div class="custom-description">
           {% if entry.simple_phenotype %}
-            <h4>Related Keywords: 
+            <h4>Phenotype: 
             {% for keyword in entry.simple_phenotype %}
-            <span class="label label-primary" style="display:inline-block; margin-bottom: 5px">{{ keyword }}</span>
+            <span class="label custom-big-label">{{ keyword }}</span>
             {% endfor %}</h4>
           {% endif %}
           {% if entry.detailed_phenotype %}
-            Detailed Phenotype: <span class="label label-default" style="display:inline-block; margin-bottom: 5px">{{ entry.detailed_phenotype }}</span><br>
+            Detailed Phenotype: <span class="label custom-small-label">{{ entry.detailed_phenotype }}</span><br>
           {% endif %}
         </div>
-        <div class="col-lg-3 card-body text-muted" style="text-align:right">
+        <div class="text-muted custom-source">
           <b>Auto   </b><span class="glyphicon glyphicon-star" aria-hidden="true"></span>
         </div>
       </div>
-        <div class="card-body" style="margin-top:0">
+        <div class="custom-text">
           P-Value: {{ entry.pvalue }}
         </div>
-        <div class="card-body" style="margin-bottom:0">Source: Fill in entry.title (entry.journal)</div><div style="padding-right: 15px; text-align:right"><span class="glyphicon glyphicon-book" aria-hidden="true"></span>
-          <a href="http://www.ncbi.nlm.nih.gov/pubmed/?term={{ entry.pmid }}" class="card-link" style="font-size: 80%"> PubMed ID: {{ entry.pmid }}</a>
+        <div class="custom-text">Source: Fill in entry.title (entry.journal)   <span class="glyphicon glyphicon-book" aria-hidden="true" style="display:inline"></span>
+          <a href="http://www.ncbi.nlm.nih.gov/pubmed/?term={{ entry.pmid }}" class="card-link" style="font-size: 80%; white-space:nowrap"> PubMed ID: {{ entry.pmid }}</a>
         </div>
       {% endif %}
     </div>

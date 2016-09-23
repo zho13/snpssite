@@ -40,9 +40,9 @@ def index():
 
 @app.route('/test', methods=['GET', 'POST'])
 def test():
-    top_SNPs = db1_session.query(Association).filter(Association.magnitude > 3).order_by(Association.magnitude.desc()).limit(10)
-    for e in top_SNPs:
-        sys.stdout.write("%s\n" % type(e.snp.rs_id))
+#    top_SNPs = db1_session.query(Association).filter(Association.magnitude > 3).order_by(Association.magnitude.desc()).limit(10)
+#    for e in top_SNPs:
+#        sys.stdout.write("%s\n" % type(e.snp.rs_id))
     return render_template('reports/1.html')
     #return send_from_directory('uploads', '1.txt')
 
@@ -144,10 +144,13 @@ def generate_gwas_catalog_results(user_rsids):
         if i > 1000:
             return matches
         # change criteria later
-        var = db2_session.query(Association).filter(Association.snp_id == mymap[query]).first()
-        #for entry in var:
-        matches.append(var)
-        i = i + 1
+        results = db2_session.query(Association).filter(Association.snp_id == mymap[query]).all()
+        for e in results:
+            sys.stdout.write("-----------------------------\n")
+            sys.stdout.write("%s | %s | %s | %s\n" % (str(query), e.id, e.snp.rs_id, e.paper.title))
+            #for entry in var:
+            matches.append((query, e))
+            i = i + 1
     return matches
 
 # Opens the specified file generated beforehand to save searches through the
@@ -211,24 +214,27 @@ def upload():
             temp = rsid_map[match.snp.rs_id]
             temp.append(make_snpedia_entry(match))
             rsid_map[match.snp.rs_id] = temp
-
+        
         #sys.stdout.write("user rsids: %d\n" % len(user_rsids))
         #matching_rsids = [x.snp.rs_id for x in snpedia_matches]
         #sys.stdout.write("matching rsids: %d\n" % len(matching_rsids))
         
         gwas_catalog_matches = generate_gwas_catalog_results(user_rsids)
         for match in gwas_catalog_matches:
+            rsid = match[0]
+            entry = match[1]
             # there may be multiple rsids associated with a single gwas catalog entry
-            rsids = re.findall(r'rs\d+', match.snp.rs_id, flags=re.IGNORECASE)
-            for rsid in rsids:
-                rsid = rsid[2:] # filter initial 'rs', leaving just the number
-                if rsid not in rsid_map:
-                    # create new entry
-                    rsid_map[rsid] = []
-                temp = rsid_map[rsid]
-                temp.append(make_gwas_catalog_entry(match, rsids))
-                rsid_map[rsid] = temp
+            rsids = re.findall(r'rs\d+', entry.snp.rs_id, flags=re.IGNORECASE)
+            #for rsid in rsids:
+            #    rsid = rsid[2:] # filter initial 'rs', leaving just the number
+            if rsid not in rsid_map:
+                # create new entry
+                rsid_map[rsid] = []
+            temp = rsid_map[rsid]
+            temp.append(make_gwas_catalog_entry(entry, rsids))
+            rsid_map[rsid] = temp
         
+
         for match in auto_matches:
             if match.rsid not in rsid_map:
                 # create new entry
@@ -236,14 +242,14 @@ def upload():
             temp = rsid_map[match.rsid]
             temp.append(match)
             rsid_map[match.rsid] = temp
-        
+
         sys.stdout.write("before: %d\n" % len(rsid_map))
         rsids = [rsid for rsid in rsid_map]
         for rsid in rsids:
             if len(rsid_map[rsid]) < 2:
                 del rsid_map[rsid]
         sys.stdout.write("after: %d\n" % len(rsid_map))
-
+        
         # Save a copy of the dynamically-generated html for later use (if user wants
         # to navigate the website and come back to it later)
         generated_report = render_template('report.html', rsid_genotype_map=rsid_genotype_map, rsid_map=rsid_map)
