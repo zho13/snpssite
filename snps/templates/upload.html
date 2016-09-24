@@ -17,13 +17,11 @@
       title:"Would you like to release your genetic data to researchers?",
       text:"Some reasons why you should consider donating:",
       confirm: function(button) {
-          //KEEP FILE
           donate = true;
           alert("Thank you for contributing to genomic research!");
           $( "#target" ).submit();
       },
       cancel: function(button) {
-          //DELETE FILE AFTER GENERATING REPORT
           donate = false;
           alert("Your genetic data will not be saved.");
           $( "#target" ).submit();

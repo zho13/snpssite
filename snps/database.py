@@ -45,11 +45,11 @@ class GwasCatalogEntry(object):
         self.journal = journal
         self.rsid_list = rsid_list
 
-def make_gwas_catalog_entry(db_object, rsid_list):
+def make_gwas_catalog_entry(db_object):
     keywords = []
     if db_object.phenotype.synonyms is not None:
         keywords = re.split(r'\|+', db_object.phenotype.synonyms)
-    entry = GwasCatalogEntry(db_object.pvalue, db_object.oddsratio, keywords, db_object.phenotype.name, db_object.paper.pubmed_id, db_object.paper.title, db_object.paper.journal, rsid_list)
+    entry = GwasCatalogEntry(db_object.pvalue, db_object.oddsratio, keywords, db_object.phenotype.name, db_object.paper.pubmed_id, db_object.paper.title, db_object.paper.journal, db_object.snp.rs_id)
     return entry
 
 # for Volodymyr's automatically-curated database
@@ -74,15 +74,15 @@ def make_auto_entry(line):
     keywords = re.split(r'\|+', tokens[2])
     if (tokens[3] == '-'):
         tokens[3] = None
-    entry = AutoEntry(tokens[0], (tokens[1])[2:], keywords, tokens[3], tokens[4])
+    entry = AutoEntry(tokens[0], int((tokens[1])[2:]), keywords, tokens[3], tokens[4])
     return entry
 
 
 # data structure for automatically-curated database
-auto_matches = []
+raw_auto_matches = []
 #f = open('/afs/cs.stanford.edu/u/zho/snpssite/snps/tmp/auto.tsv')
 f = open('/Users/zandraho/Desktop/CURIS-copy/snps/tmp/auto.tsv')
 line = f.readline()
 while (line != ""):
-	auto_matches.append(make_auto_entry(line))
+	raw_auto_matches.append(make_auto_entry(line))
 	line = f.readline()

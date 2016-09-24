@@ -1,12 +1,8 @@
-{% extends "jumbo_base.html" %}
+{% extends "navigation_base.html" %}
 {% block title %}Upload{% endblock %}
-{% block nav %}
-    <li class="active"><a href="{{ url_for('report') }}">Report</a></li>
-    <li><a href="{{ url_for('about') }}">About</a></li>
-    <li><a href="{{ url_for('contact') }}">Contact</a></li>
-{% endblock %}
-{% block jumbocontent %}
-  <div class="container welcome">
+{% block navcontent %}
+<aside>
+  <div class="container text-center">
     <h3 class="text-muted">Please upload a .txt file below.</h3>
     <form id="target" action="upload" method="post" enctype="multipart/form-data">
       <br /><br />
@@ -14,22 +10,27 @@
       <input type="submit" value="Upload" id="dataConfirm">
     </form>
   </div>
+</aside>
   <script>
     $("#dataConfirm").confirm({
+      var donate = false;
       title:"Would you like to release your genetic data to researchers?",
       text:"Some reasons why you should consider donating:",
       confirm: function(button) {
-          alert("Thank you for contributing to genomic research!");
           //KEEP FILE
+          donate = true;
+          alert("Thank you for contributing to genomic research!");
           $( "#target" ).submit();
       },
       cancel: function(button) {
-          alert("Your genetic data will not be saved.");
           //DELETE FILE AFTER GENERATING REPORT
+          donate = false;
+          alert("Your genetic data will not be saved.");
           $( "#target" ).submit();
       },
       confirmButton: "Donate!",
       cancelButton: "No thanks"
+      return donate;
     });
   </script>
   <script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>

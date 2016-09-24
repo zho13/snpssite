@@ -1,9 +1,27 @@
 # snpssite
 
-a couple notes to get started:
-- first, delete the current top_SNPs.txt file. the first time you upload a file, a new one should be created--it'll take a while, but only needs to run once
-- add the new .sql file to the tmp folder and in database.py, change the filename in create_engine to the new .sql file
+notes to get started
 
 commands:
-
 source sqlalchemy-workspace/bin/activate && python snps/SNP-site.py
+
+layout
+
+  - databases (snpedia, gwas_catalog, auto) are in snps/tmp
+  - user 23andMe.txt files are in snps/uploads, and are saved according to the user.id of the
+    user management account system database (basic_app.sqlite)
+  - user reports are in snps/templates/reports, also stored by user.id
+  - snps/static/styles/classic.css controls the layout for the cards
+  - __init__.py initializes the databases for snpedia and gwas_catalog
+  - database.py initializes the auto.tsv file
+
+
+important notes
+
+  - in order to delete user files that are more than 30 days old, you currently have to
+    visit the /delete page
+  - generate_auto_results(user_rsids) currently takes about 2 minutes to run--not sure if
+    there's a faster way, but optimization would be ideal
+  - to change the types of snps that the report outputs, ctrl-f "change criteria later"
+  - the modal functionality for info release is broken. see the upload.html file
+  - from the report page, only the SNPSSITE link works--others do nothing

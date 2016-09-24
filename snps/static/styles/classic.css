@@ -79,29 +79,7 @@ h4 {
 	margin-left: 0;
     margin-right: 0;
 }
-.rsid {
-	text-align: right;
-}
-.results tr[visible='false'],
-.no-result {
-  display:none;
-}
-.results tr[visible='true'] {
-  display:table-row;
-}
-.counter {
-  padding:8px; 
-  color:#ccc;
-}
-.alert {
-	margin-top: 20px;
-}
-.center {
-    margin: auto;
-    padding-top: 20px;
-    padding-left: 45px;
-}
-/* Cards */
+
 .card {
 	padding-top: .5em;
 	padding-bottom: .5em;
