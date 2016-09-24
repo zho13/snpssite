@@ -17,6 +17,9 @@ layout
 
 
 important notes
+  - there are three paths you need to change:
+	1. in snps/__init__.py, change the snpedia and gwas_catalog paths
+	2. in snps/database.py, change the auto path
 
   - in order to delete user files that are more than 30 days old, you currently have to
     visit the /delete page

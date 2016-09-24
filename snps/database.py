@@ -80,8 +80,7 @@ def make_auto_entry(line):
 
 # data structure for automatically-curated database
 raw_auto_matches = []
-#f = open('/afs/cs.stanford.edu/u/zho/snpssite/snps/tmp/auto.tsv')
-f = open('/Users/zandraho/Desktop/CURIS-copy/snps/tmp/auto.tsv')
+f = open('/afs/cs.stanford.edu/u/zho/snpssite/snps/tmp/auto.tsv')
 line = f.readline()
 while (line != ""):
 	raw_auto_matches.append(make_auto_entry(line))

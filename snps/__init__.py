@@ -9,11 +9,8 @@ from sqlalchemy.ext.declarative import declarative_base
 
 # create sqlite database
 if os.environ.get('DATABASE_URL') is None:
-	# in scail
-  #engine = create_engine('sqlite://///afs/cs.stanford.edu/u/zho/snpssite/snps/tmp/snpedia.sql', convert_unicode=True)
-  #engine2 = create_engine('sqlite://///afs/cs.stanford.edu/u/zho/snpssite/snps/tmp/gwas-catalog.sql', convert_unicode=True)
-  engine = create_engine('sqlite://///Users/zandraho/Desktop/CURIS-copy/snps/tmp/snpedia.sql', convert_unicode=True)
-  engine2 = create_engine('sqlite://///Users/zandraho/Desktop/CURIS-copy/snps/tmp/gwas-catalog.sql', convert_unicode=True)
+  engine = create_engine('sqlite://///afs/cs.stanford.edu/u/zho/snpssite/snps/tmp/snpedia.sql', convert_unicode=True)
+  engine2 = create_engine('sqlite://///afs/cs.stanford.edu/u/zho/snpssite/snps/tmp/gwas-catalog.sql', convert_unicode=True)
 else:
   engine = create_engine(os.environ['DATABASE_URL'], convert_unicode=True)
   engine2 = create_engine(os.environ['DATABASE_URL'], convert_unicode=True)
