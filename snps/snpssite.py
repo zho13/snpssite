@@ -132,23 +132,18 @@ def generate_gwas_catalog_results(user_rsids):
         line = e.rs_id
         rsids = re.findall(r'rs\d+', line, flags=re.IGNORECASE)
         for rsid in rsids:
-            #sys.stdout.write("%s\n" % rsid[2:])
             updated.append(int(rsid[2:]))
             mymap[int(rsid[2:])] = e.id
     query_rsids = set(updated).intersection(user_rsids)
-    sys.stdout.write("query rsids: %d\n" % len(query_rsids))
 
+    # change criteria later
     matches = []
     i = 0
     for query in query_rsids:
         if i > 1000:
             return matches
-        # change criteria later
         results = db2_session.query(Association).filter(Association.snp_id == mymap[query]).all()
         for e in results:
-            sys.stdout.write("-----------------------------\n")
-            sys.stdout.write("%s | %s | %s | %s\n" % (str(query), e.id, e.snp.rs_id, e.paper.title))
-            #for entry in var:
             matches.append((query, e))
             i = i + 1
     return matches
@@ -209,15 +204,12 @@ def upload():
         snpedia_matches = generate_snpedia_results(top_filename, user_rsids, rsid_genotype_map)
         for match in snpedia_matches:
             if match.snp.rs_id not in rsid_map:
+                sys.stdout.write("%s\n", type(match.snp.rs_id))
                 # create new entry
                 rsid_map[match.snp.rs_id] = []
             temp = rsid_map[match.snp.rs_id]
             temp.append(make_snpedia_entry(match))
             rsid_map[match.snp.rs_id] = temp
-        
-        #sys.stdout.write("user rsids: %d\n" % len(user_rsids))
-        #matching_rsids = [x.snp.rs_id for x in snpedia_matches]
-        #sys.stdout.write("matching rsids: %d\n" % len(matching_rsids))
         
         gwas_catalog_matches = generate_gwas_catalog_results(user_rsids)
         for match in gwas_catalog_matches:
@@ -225,8 +217,8 @@ def upload():
             entry = match[1]
             # there may be multiple rsids associated with a single gwas catalog entry
             rsids = re.findall(r'rs\d+', entry.snp.rs_id, flags=re.IGNORECASE)
-            #for rsid in rsids:
-            #    rsid = rsid[2:] # filter initial 'rs', leaving just the number
+            for rsid in rsids:
+                rsid = int(rsid[2:]) # filter initial 'rs', leaving just the number
             if rsid not in rsid_map:
                 # create new entry
                 rsid_map[rsid] = []
@@ -234,21 +226,31 @@ def upload():
             temp.append(make_gwas_catalog_entry(entry, rsids))
             rsid_map[rsid] = temp
         
+        #rsids = zip(range(len(auto_matches)), [int(x.rsid) for x in auto_matches])
+        #auto_overlap = set(top_SNPs).intersection(user_rsids)
 
+        #for match in auto_matches:
+        #overlap = [match for match in auto_matches if int(match.rsid) in user_rsids]
+
+        #sys.stdout.write("%s\n" % len(overlap))
+        
+        # note that this for loop takes about 2 min--sorry i didn't have time find a shortcut!
         for match in auto_matches:
-            if match.rsid not in rsid_map:
-                # create new entry
-                rsid_map[match.rsid] = []
-            temp = rsid_map[match.rsid]
-            temp.append(match)
-            rsid_map[match.rsid] = temp
-
-        sys.stdout.write("before: %d\n" % len(rsid_map))
+            rsid = int(match.rsid)
+            if rsid in user_rsids:
+                if rsid not in rsid_map:
+                    # create new entry
+                    rsid_map[rsid] = []
+                temp = rsid_map[rsid]
+                temp.append(match)
+                rsid_map[rsid] = temp
+        
         rsids = [rsid for rsid in rsid_map]
+
+        # change display criteria later--it currently keeps only the snps with 3+ entries
         for rsid in rsids:
-            if len(rsid_map[rsid]) < 2:
+            if len(rsid_map[rsid]) < 3:
                 del rsid_map[rsid]
-        sys.stdout.write("after: %d\n" % len(rsid_map))
         
         # Save a copy of the dynamically-generated html for later use (if user wants
         # to navigate the website and come back to it later)
@@ -259,7 +261,6 @@ def upload():
         with open(new_filename, 'w+') as f:
             f.write(generated_report.encode('utf-8'))
         return render_template('reports/' + str(current_user.id) + '.html')
-        #return generated_report
     else:
         return render_template('retry.html')
 
