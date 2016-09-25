@@ -46,7 +46,6 @@ def delete():
     now = time.time()
     for f in os.listdir(path):
         filename = os.path.join(path, f)
-        sys.stdout.write("\n\n%s\n\n" % filename)
         # User SNP files expire after 30 days
         EXPIRATION_TIME = 30 * 86400
         if os.stat(filename).st_mtime < now - EXPIRATION_TIME:
@@ -147,7 +146,6 @@ def generate_auto_results(user_rsids):
 # of entries associated with the rsid
 def update_rsid_map(db_type, rsid_map, matches):
     for match in matches:
-        sys.stdout.write("here\n")
         rsid = match[0]
         entry = match[1]
         if rsid not in rsid_map:
